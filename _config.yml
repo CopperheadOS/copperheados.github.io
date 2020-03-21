@@ -30,6 +30,7 @@ github_username:  copperheados
 theme: jekyll-theme-hacker
 plugins:
   - jekyll-feed
+  - jekyll-sitemap
 
 # Exclude from processing.
 # The following items will not be processed, by default.
