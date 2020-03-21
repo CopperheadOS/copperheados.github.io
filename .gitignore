@@ -1,0 +1,8 @@
+_site
+_site.tar.xz
+.jekyll-assets-cache
+.sass-cache
+.asset-cache
+.bundle
+Gemfile
+Gemfile.lock
