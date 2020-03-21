@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/css/style.css?v=3b961330d90c3bca66ff650f33c2e11db3e49cc1">
+
+<!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>CopperheadOS usage guide | CopperheadOS Documentation Repository</title>
+<meta name="generator" content="Jekyll v3.8.5" />
+<meta property="og:title" content="CopperheadOS usage guide" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Recommendations on how to use CopperheadOS effectively." />
+<meta property="og:description" content="Recommendations on how to use CopperheadOS effectively." />
+<link rel="canonical" href="http://localhost:4000/usage_guide.html" />
+<meta property="og:url" content="http://localhost:4000/usage_guide.html" />
+<meta property="og:site_name" content="CopperheadOS Documentation Repository" />
+<script type="application/ld+json">
+{"description":"Recommendations on how to use CopperheadOS effectively.","@type":"WebPage","url":"http://localhost:4000/usage_guide.html","headline":"CopperheadOS usage guide","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+  </head>
+
+  <body>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <header>
+      <div class="container">
+        <div class="clearfix">
+          <p>
+            <a href="https://copperhead.co/android">
+              <img src="/assets/images/logo_circle_white_small.png">
+            </a>
+            <h1>CopperheadOS Documentation Repository</h1>
+          </p>
+        </div>
+        <div id='subpage-navbar' class='container'>
+            <div class='row'>
+                <main class='subpage'>
+                    <ol class='docs-toc'>
+                        <ul>
+                          <li><a href="/">Home</a></li>
+                          <li><a href="/updates">Updates</a></li>
+                          <li><a href="/usage_guide">Usage Guide</a></li>
+                          <li><a href="/technical_overview">Overview</a></li>
+                          <li><a href="/verified_boot">Verified Boot</a></li>
+                          <li><a href="/building">Build</a></li>
+                          <li><a href="/install">Install</a></li>
+                          <li><a href="/devices">Devices</a></li>
+                          <li><a href="/licensing">Licensing</a></li>
+                        </ul>
+                    </ol>
+                </main>
+            </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <p><em>Proceed with caution: This documentation is being worked on and out of date.</em></p>
+
+<h1 class="no_toc" id="copperheados-usage-guide">CopperheadOS usage guide</h1>
+
+<p>CopperheadOS is a Linux-based mobile operating system with a focus on privacy and security. It
+builds on the latest stable release of the Android Open Source Project (8.1.0) which is Android
+without any Google apps and services.</p>
+
+<p>This usage guide documents the user experience of the OS with a focus on how it compares to the
+Android operating system. Most security features are kept unintrusive without a user-facing
+impact. See the <a href="/technical_overview">technical overview</a> for
+documentation on the security features rather than only changes to the user experience.</p>
+
+<p>CopperheadOS can run Android apps unless they have a hard dependency on Google services. It ships
+with the F-Droid app store to provide access to thousands of open source apps but it can also run
+many apps from the Amazon Appstore and Google Play Store.</p>
+
+<p>Since it doesn’t include Google apps and services, CopperheadOS isn’t limited by the requirements
+imposed by Google for an operating system to be considered Android compatible. It disregards the
+constraints required to actually be Android while still retaining the ability to run nearly all
+real world Android apps not tied to Google. Android devices aren’t permitted to ship many of the
+features documented below like the Network permission toggle.</p>
+
+<ul id="markdown-toc">
+  <li><a href="#permission-model" id="markdown-toc-permission-model">Permission model</a>    <ul>
+      <li><a href="#network-permission" id="markdown-toc-network-permission">Network permission</a></li>
+      <li><a href="#sensors-permission" id="markdown-toc-sensors-permission">Sensors permission</a></li>
+      <li><a href="#background-access" id="markdown-toc-background-access">Background access</a>        <ul>
+          <li><a href="#clipboard" id="markdown-toc-clipboard">Clipboard</a></li>
+          <li><a href="#audio-recording" id="markdown-toc-audio-recording">Audio recording</a></li>
+          <li><a href="#sensors" id="markdown-toc-sensors">Sensors</a></li>
+          <li><a href="#location" id="markdown-toc-location">Location</a></li>
+        </ul>
+      </li>
+      <li><a href="#serial-number" id="markdown-toc-serial-number">Serial number</a></li>
+      <li><a href="#display-over-other-apps" id="markdown-toc-display-over-other-apps">Display over other apps</a></li>
+      <li><a href="#storage" id="markdown-toc-storage">Storage</a>        <ul>
+          <li><a href="#file-management" id="markdown-toc-file-management">File management</a></li>
+        </ul>
+      </li>
+      <li><a href="#location-1" id="markdown-toc-location-1">Location</a></li>
+    </ul>
+  </li>
+  <li><a href="#user-profiles" id="markdown-toc-user-profiles">User profiles</a></li>
+  <li><a href="#force-always-on-tor--vpn" id="markdown-toc-force-always-on-tor--vpn">Force always on Tor / VPN</a></li>
+  <li><a href="#native-debugging" id="markdown-toc-native-debugging">Native debugging</a></li>
+  <li><a href="#usb-peripherals" id="markdown-toc-usb-peripherals">USB peripherals</a></li>
+  <li><a href="#camera-on-lockscreen" id="markdown-toc-camera-on-lockscreen">Camera on lockscreen</a></li>
+  <li><a href="#quick-settings-restrictions" id="markdown-toc-quick-settings-restrictions">Quick Settings restrictions</a></li>
+  <li><a href="#wi-fi" id="markdown-toc-wi-fi">Wi-Fi</a>    <ul>
+      <li><a href="#scanning" id="markdown-toc-scanning">Scanning</a></li>
+      <li><a href="#privacy-when-associated-with-an-access-point-ap" id="markdown-toc-privacy-when-associated-with-an-access-point-ap">Privacy when associated with an Access Point (AP)</a></li>
+    </ul>
+  </li>
+  <li><a href="#lte-only-mode" id="markdown-toc-lte-only-mode">LTE only mode</a></li>
+  <li><a href="#network-connection-information--statistics" id="markdown-toc-network-connection-information--statistics">Network connection information / statistics</a></li>
+  <li><a href="#default-connections-made-by-copperheados" id="markdown-toc-default-connections-made-by-copperheados">Default connections made by CopperheadOS</a></li>
+  <li><a href="#dns" id="markdown-toc-dns">DNS</a></li>
+  <li><a href="#app-spawning-time" id="markdown-toc-app-spawning-time">App spawning time</a></li>
+  <li><a href="#updates-on-pixel-phones" id="markdown-toc-updates-on-pixel-phones">Updates on Pixel phones</a>    <ul>
+      <li><a href="#settings" id="markdown-toc-settings">Settings</a></li>
+      <li><a href="#update-security" id="markdown-toc-update-security">Update security</a></li>
+      <li><a href="#disabling-updates" id="markdown-toc-disabling-updates">Disabling updates</a></li>
+    </ul>
+  </li>
+  <li><a href="#authentication--encryption" id="markdown-toc-authentication--encryption">Authentication / encryption</a>    <ul>
+      <li><a href="#fingerprint-unlock-attempts" id="markdown-toc-fingerprint-unlock-attempts">Fingerprint unlock attempts</a></li>
+    </ul>
+  </li>
+  <li><a href="#keyboard-personalized-suggestions" id="markdown-toc-keyboard-personalized-suggestions">Keyboard personalized suggestions</a></li>
+  <li><a href="#f-droid-repository" id="markdown-toc-f-droid-repository">F-Droid repository</a></li>
+  <li><a href="#app-recommendations" id="markdown-toc-app-recommendations">App recommendations</a>    <ul>
+      <li><a href="#built-in-user-facing-apps" id="markdown-toc-built-in-user-facing-apps">Built-in user-facing apps</a></li>
+      <li><a href="#browsing" id="markdown-toc-browsing">Browsing</a></li>
+      <li><a href="#red-shift" id="markdown-toc-red-shift">Red shift</a></li>
+      <li><a href="#messaging" id="markdown-toc-messaging">Messaging</a>        <ul>
+          <li><a href="#conversations" id="markdown-toc-conversations">Conversations</a></li>
+          <li><a href="#signal" id="markdown-toc-signal">Signal</a></li>
+          <li><a href="#silence" id="markdown-toc-silence">Silence</a></li>
+          <li><a href="#whatsapp" id="markdown-toc-whatsapp">WhatsApp</a></li>
+        </ul>
+      </li>
+      <li><a href="#youtube" id="markdown-toc-youtube">YouTube</a></li>
+      <li><a href="#maps" id="markdown-toc-maps">Maps</a>        <ul>
+          <li><a href="#simple-fast-and-highly-usable" id="markdown-toc-simple-fast-and-highly-usable">Simple, fast and highly usable</a></li>
+          <li><a href="#functionality-rich" id="markdown-toc-functionality-rich">Functionality rich</a></li>
+          <li><a href="#google-maps" id="markdown-toc-google-maps">Google maps</a></li>
+        </ul>
+      </li>
+      <li><a href="#advanced-camera-features" id="markdown-toc-advanced-camera-features">Advanced camera features</a></li>
+      <li><a href="#uber" id="markdown-toc-uber">Uber</a></li>
+      <li><a href="#chromecast" id="markdown-toc-chromecast">Chromecast</a></li>
+      <li><a href="#installing-apps-from-the-play-store" id="markdown-toc-installing-apps-from-the-play-store">Installing apps from the Play Store</a></li>
+    </ul>
+  </li>
+  <li><a href="#verified-boot" id="markdown-toc-verified-boot">Verified boot</a>    <ul>
+      <li><a href="#verified-boot-attestation-pixel-2-and-later" id="markdown-toc-verified-boot-attestation-pixel-2-and-later">Verified boot attestation (Pixel 2 and later)</a></li>
+      <li><a href="#verified-boot-fingerprint" id="markdown-toc-verified-boot-fingerprint">Verified boot fingerprint</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="permission-model">Permission model</h2>
+
+<p>Apps run in an application sandbox with access to little more than their internal data and
+interfaces explicitly exported to them from the base system and other apps. Most of their
+capabilities need to be granted by the permission system. Permissions are divided into normal
+permissions like the ability to set an alarm or start at boot and dangerous permissions that need
+to be explicitly granted by users.</p>
+
+<p>CopperheadOS and stock Android use the same runtime permission model for apps targeting the modern
+Android platform. Dangerous permission groups (camera, contacts, microphone, etc.) are disabled by
+default and apps need to request them from the user as needed with the expectation that they
+attempt to handle not getting the permissions. The dangerous permission groups can also be toggled
+via Settings -&gt; Apps &amp; notifications -&gt; App info -&gt; App name -&gt; Permissions and modern apps can be
+expected to handle this and request the permissions again as needed. Dangerous permission groups
+can also be audited / toggled by group instead of by app using Settings -&gt; Apps &amp; notifications -&gt;
+App permissions.</p>
+
+<p>For apps targeting old versions of the Android platform, stock Android grants all requested
+dangerous permissions at install time. The dangerous permission groups can still be toggled off
+via Settings -&gt; Apps &amp; notifications -&gt; App info -&gt; App name -&gt; Permissions and provide empty data
+where possible rather than failing for compatibility. By contrast, CopperheadOS presents the user
+with a menu where they can review and disable dangerous permission groups before the app is able
+to run. The substantial difference is that stock Android doesn’t give the user a chance to toggle
+off permissions before the app is able to run. Installing it and toggling them off before manually
+launching the app is not adequate as it’s possible for it to be started before that.</p>
+
+<p>Note that Android makes it possible for apps to get by without permissions in most cases. An app
+can have the user pick a contact, take a picture, store / open a file in a storage provider, etc.
+without any permissions required. Be skeptical about the justification given by app developers for
+their permission usage. For example, many claim to need to read the phone state (Phone permission
+group) to detect an active phone call but it’s almost always a false justification as they could
+be using the standard audio focus mechanism.</p>
+
+<h3 id="network-permission">Network permission</h3>
+
+<p>Unlike stock Android, CopperheadOS treats full network access as a user-facing permission with a
+toggle. For compatibility, it’s enabled by default for apps targeting the modern Android platform
+unlike other runtime permissions.</p>
+
+<p>There are many known cases of apps exporting interfaces to other apps for making limited network
+requests, so this toggle will become more useful when further isolation options are available. For
+example, web browsers almost all expose an interface allowing other apps to open URLs and choose
+not to require either the INTERNET permission or explicit user consent before making the request.</p>
+
+<h3 id="sensors-permission">Sensors permission</h3>
+
+<p>Unlike stock Android, CopperheadOS treats sensor access as a user-facing permission with a toggle.
+For compatibility, it’s enabled by default for apps targeting the modern Android platform unlike
+other runtime permissions. Stock Android only treats heartbeat sensor access as dangerous.</p>
+
+<p>Unlike the Network toggle, apps aren’t marked with an existing low-level permission when they make
+use of sensor access. CopperheadOS adds a new permission and treats all apps as requesting it so
+there’s a sensor permission toggle for every app.</p>
+
+<p>Sensor access has been shown to provide the capability to perform <a href="http://www.ccs.neu.edu/home/noubir/publications-local/NVBN2016.pdf">location
+tracking</a>, <a href="https://link.springer.com/article/10.1007/s10207-017-0369-x">input
+logging</a> and crude audio recording
+that’s <a href="https://www.usenix.org/system/files/conference/usenixsecurity14/sec14-paper-michalevsky.pdf">still capable of recognizing
+speech</a>
+despite the 200 Hz sampling limit enforced by the OS.</p>
+
+<h3 id="background-access">Background access</h3>
+
+<p>CopperheadOS adds special permissions for controlling access to data in the background in Settings
+-&gt; Security -&gt; Apps with background access.</p>
+
+<p>This feature will become more strict in the future. It’s an early implementation aimed at fleshing
+out the full set of functionality and working towards disabling access by default.</p>
+
+<p>The powerful ‘draw over other apps’ special permission can be used to remain in the foreground. It
+needs to be explicitly granted by users in a more manual way than the usual dangerous permission
+request dialog and a persistent notification is displayed while it’s being used. It also can’t be
+used to draw over the system ui to hide the persistent notification. It’s outside of the scope of
+this feature as it’s quite dangerous already and should only be granted to an app in exceptional
+circumstances just like accessibility services and device administrators.</p>
+
+<h4 id="clipboard">Clipboard</h4>
+
+<p>CopperheadOS disables access to the clipboard by apps in the background by default. This can be
+enabled per-app via Settings -&gt; Security &amp; location -&gt; Apps with background access -&gt; Access
+clipboard in the background. For example, you may need to whitelist a clipboard manager.</p>
+
+<h4 id="audio-recording">Audio recording</h4>
+
+<p>Initiating audio recording in the background can be disabled per-app via Settings -&gt; Security &amp;
+location -&gt; Apps with background access -&gt; Record audio in the background. It isn’t yet disabled
+by default but will be in the future.</p>
+
+<p>For now, apps can still initiate audio recording in the foreground and continue in the background
+even with background audio recording disabled. The feature will eventually be improved to kill
+apps with an open recording stream when they’re sent to the background.</p>
+
+<h4 id="sensors">Sensors</h4>
+
+<p>Sensors access in the background can be disabled per-app via Settings -&gt; Security &amp; location -&gt;
+Apps with background access -&gt; Access sensors in the background. It isn’t yet disabled by default
+but will be in the future.</p>
+
+<h4 id="location">Location</h4>
+
+<p>Location access in the background can be disabled per-app via Settings -&gt; Security &amp; location -&gt;
+Apps with background access -&gt; Access location in the background. It isn’t yet disabled by default
+but will be in the future.</p>
+
+<h3 id="serial-number">Serial number</h3>
+
+<p>CopperheadOS requires that apps have the Phone permission group (read phone state) to access the
+serial number just like the IMEI on stock Android. Android is moving towards this but doesn’t yet
+enforce it even for apps targeting Android Oreo.</p>
+
+<h3 id="display-over-other-apps">Display over other apps</h3>
+
+<p>Unlike stock Android, CopperheadOS doesn’t permit any automatic grants of the special “Display
+over other apps” permission. It needs to be very explicitly granted by users.</p>
+
+<h3 id="storage">Storage</h3>
+
+<p>Apps have their own private storage directories and can share files with other apps using content
+providers. Apps can act as storage providers to provide structured requests to retrieve and store
+data including for the shared storage directory. Direct scoped access can also be requested for
+the shared storage directory (since 7.0). Unfortunately, many apps require the storage permissions
+for direct, full access to shared storage so it’s unwise to store sensitive data there.</p>
+
+<p>In the future, CopperheadOS will offer the ability to isolate shared storage rather than toggling
+access. Isolated shared storage will provide an app with a dedicated shared storage directory
+accessible only to themselves and the built-in file manager. Ideally, apps would already use the
+available tools to provide this kind of functionality on their own.</p>
+
+<h4 id="file-management">File management</h4>
+
+<p>The built-in file manager for shared storage is recommended. It’s available as the Files app on
+the home screen and is also accessible via Settings -&gt; Storage -&gt; Files. Shared storage can be
+shown by enabling by “Show internal storage” in the app menu. It has proper integration with
+storage providers (apps providing storage to other apps, with explicit user control) and external
+storage. It will also be the only app able to access isolated shared storage directories of other
+apps once that feature is implemented.</p>
+
+<h3 id="location-1">Location</h3>
+
+<p>The location icon is displayed in the status bar when an app is monitoring the device’s location.</p>
+
+<p>Settings -&gt; Security &amp; Location -&gt; Location provides a global toggle to disable location detection
+along with a list of apps that have made recent location requests.</p>
+
+<h2 id="user-profiles">User profiles</h2>
+
+<p>User profiles offer isolated workspaces within the operating system.</p>
+
+<p>Fully opening the notification tray will show an avatar for the main user profile. Touching it
+opens the menu for creating and switching between profiles. Further configuration is available via
+‘More settings’ which is a shortcut to Settings -&gt; Users &amp; accounts -&gt; Users.</p>
+
+<p>The special Guest profile is meant to be used as a scratch space with a quick shortcut in the
+notification tray for deleting everything in the profile. It also offers the option to clear it
+when switching to it.</p>
+
+<p>Apps cannot communicate or share data across user profiles. On Pixel phones, each user profile has
+separate disk encryption keys for all user data rather than there being a shared boot password. A
+profile also cannot record audio while another profile is active. By default, only the Owner
+account has access to phone calls and SMS. It can be enabled for other accounts via the user
+settings menu on the owner account.</p>
+
+<p>In addition to the baseline functionality, CopperheadOS exposes option to disallow audio recording
+and to disallow installing apps in the user configuration menu for the owner account.</p>
+
+<h2 id="force-always-on-tor--vpn">Force always on Tor / VPN</h2>
+
+<p>In Settings -&gt; Network &amp; Internet -&gt; VPN, the gear icon next to installed VPN apps like Orbot
+(Tor) can be used to set one as an “Always-on VPN” to make it start automatically. However, it’s
+also necessary to toggle on “Block connections without VPN” to disallow connections being made if
+the VPN dies. This will be enabled by default for an “Always-on VPN” on CopperheadOS in the near
+future.</p>
+
+<h2 id="native-debugging">Native debugging</h2>
+
+<p>Support for native debugging features can be disabled by toggling off Settings -&gt; Security &amp;
+Location -&gt; Enable native code debugging. It’s left enabled by default like stock in order to
+generate useful logs and crash dump information from crashes tied to bugs in native code.
+Disabling it will make the information generated by the ‘Take bug report’ feature nearly useless
+for crashes caused by native code but it will still produce useful information for uncaught Java
+exceptions. There are currently no known app compatibility issues caused by disabling this, but it
+isn’t compatible with some nasty tricks used by obfuscated apps to make themselves harder to
+inspect.</p>
+
+<h2 id="usb-peripherals">USB peripherals</h2>
+
+<p>CopperheadOS defaults to ignoring connected USB peripherals if the screen is locked. This can be
+controlled in Settings -&gt; Security &amp; Location -&gt; USB accessories. The options are:</p>
+
+<ol>
+  <li>Disallow new USB peripherals</li>
+  <li>Allow new USB peripherals when unlocked (default)</li>
+  <li>Allow new USB peripherals (like stock Android)</li>
+</ol>
+
+<p>This option has no impact on the device acting as a USB peripheral itself when connected to a
+computer. However, Android already defaults to charge only mode and requires explicit opt-in to
+the device exposing itself as an MTP, PTP or MIDI device.</p>
+
+<h2 id="camera-on-lockscreen">Camera on lockscreen</h2>
+
+<p>CopperheadOS adds a toggle at Settings -&gt; Security &amp; Location -&gt; Camera on lockscreen for reducing
+lockscreen attack surface by disallowing camera usage. It disables both the camera launch icon in
+the lower right corner of the lockscreen and camera launch gestures while locked.</p>
+
+<h2 id="quick-settings-restrictions">Quick Settings restrictions</h2>
+
+<p>CopperheadOS restricts usage of sensitive Quick Settings tiles while the screen is securely locked.</p>
+
+<p>The following Quick Settings tiles have an unlocking requirement in stock Android:</p>
+
+<ul>
+  <li>Cast</li>
+  <li>Location</li>
+</ul>
+
+<p>CopperheadOS extends this requirement to more tiles:</p>
+
+<ul>
+  <li>Bluetooth</li>
+  <li>NFC (not present as a tile in stock)</li>
+  <li>Airplane mode</li>
+  <li>Wi-Fi</li>
+  <li>Auto-rotate</li>
+  <li>Data Saver</li>
+  <li>Hotspot</li>
+  <li>Cellular data</li>
+  <li>Battery</li>
+</ul>
+
+<p>Some tiles still have no unlocking requirement:</p>
+
+<ul>
+  <li>Flashlight</li>
+  <li>Night Light</li>
+  <li>Invert colors</li>
+  <li>Do not disturb</li>
+  <li>Work</li>
+</ul>
+
+<p>The ‘Flashlight’ tile is quite useful from the lockscreen and adds minimal attack surface.</p>
+
+<p>‘Night Light’ and ‘Invert colors’ are comparable to the brightness slider. They add minimal attack
+surface and are easy to notice and toggle off. Similarly, ‘Do not disturb’ (DND) is comparable to
+the volume rocker which works while locked and both are quite useful functionality to have there.
+The volume rocker already allows setting the ‘Alarms only’ DND mode too.</p>
+
+<p>Android for Work isn’t currently in scope for CopperheadOS hardening and the Work tile isn’t
+available when it’s not in use, so it has been left as is. Android for Work isn’t aimed at
+businesses deploying dedicated work devices but rather Bring Your Own Device (BYOD).</p>
+
+<h2 id="wi-fi">Wi-Fi</h2>
+
+<h3 id="scanning">Scanning</h3>
+
+<p>MAC randomization is always enabled for Wi-Fi scanning. The Nexus 5X and Pixel phones have fairly
+unique firmware support for scanning MAC randomization going <a href="https://android-developers.googleblog.com/2017/04/changes-to-device-identifiers-in.html">above and beyond the usual
+implementation</a>.
+On most other devices, there are identifiers exposed by Wi-Fi scanning beyond the MAC address such
+as the packet sequence number and assorted identifying information in the probe requests.</p>
+
+<p>Wi-Fi scanning is never performed when Wi-Fi is disabled without explicitly enabling it in Settings
+-&gt; Security &amp; Location -&gt; Location -&gt; Scanning, unlike stock Android. The same thing applies to
+Bluetooth.</p>
+
+<p>Avoid using hidden APs (i.e. APs not broadcasting their SSID) since known hidden SSIDs end up
+being broadcast to find them again. SSIDs are not broadcast for standard non-hidden APs.</p>
+
+<h3 id="privacy-when-associated-with-an-access-point-ap">Privacy when associated with an Access Point (AP)</h3>
+
+<p>The DHCP client uses the anonymity profile rather than sending a hostname so it doesn’t compromise
+the privacy offered by MAC randomization.</p>
+
+<p>Unlike stock Android, CopperheadOS also provides MAC randomization when associated with an AP.
+This is currently exclusive to Pixel phones and can be toggled off in Settings -&gt; Network &amp;
+Internet -&gt; Wi-Fi -&gt; Wi-Fi preferences -&gt; Randomize MAC address which will restore the hardware
+MAC address when Wi-Fi is toggled off and on again.</p>
+
+<h2 id="lte-only-mode">LTE only mode</h2>
+
+<p>If you have a reliable LTE connection from your carrier, you can reduce attack surface by
+disabling 2G / 3G connectivity in Settings -&gt; Network &amp; Internet -&gt; Mobile network -&gt; Preferred
+network type. Traditional voice calls will only work in the LTE only mode if you have either an
+LTE connection and VoLTE (Voice over LTE) support or a Wi-Fi connection and VoWi-Fi (Voice over
+Wi-Fi) support. VoLTE / VoWi-Fi on Pixel phones is expected to work on all carriers where it’s
+supported on stock (T-Mobile, Rogers, Fido, etc.) other than Verizon. VoLTE / VoWi-Fi compatibility
+is substantially worse on Nexus devices for now.</p>
+
+<p>This feature is not intended to improve the confidentiality of traditional calls and texts, but
+may somewhat raise the bar for some forms of interception. It’s not a substitute for end-to-end
+encrypted calls / texts or even transport layer encryption. LTE does provide basic network
+authentication / encryption but it’s for the network itself. The intention of the LTE only feature
+is only hardening against remote exploitation by disabling an enormous amount of legacy code.</p>
+
+<h2 id="network-connection-information--statistics">Network connection information / statistics</h2>
+
+<p>CopperheadOS prevents third party apps from obtaining detailed network information without any
+permissions as they can on stock Android. The Net Monitor app is built into CopperheadOS and has a
+special exception from this rule. Network information can also be accessed via the Android Debug
+Bridge shell. Third party apps can only access information that’s made explicitly available via
+documented interfaces with permission controls and there’s essentially no access to it right now
+as valid use cases for it by third party apps not covered by Net Monitor haven’t been presented.
+The only known examples of using the information in good faith haven’t been correct, such as the
+attempts to implement a user-facing firewall via a VPN service rather than properly integrated via
+the existing OS firewall infrastructure so that it actually works properly.</p>
+
+<h2 id="default-connections-made-by-copperheados">Default connections made by CopperheadOS</h2>
+
+<p>Net Monitor can be used to monitor connections by the OS in addition to those done by apps. The
+DownloadManager service will do HTTP / HTTPS downloads on behalf of third party apps and those
+shouldn’t be confused with downloads triggered by the OS itself.</p>
+
+<p>CopperheadOS makes connections to the outside world to test connectivity, detect captive portals
+and download updates. No data varying per user / installation is sent in these connections. There
+aren’t analytics / telemetry in CopperheadOS.</p>
+
+<p>The expected connections by CopperheadOS (including all base system apps) are the following:</p>
+
+<ul>
+  <li>The CopperheadOS Updater app fetches update metadata from https://SERVER/DEVICE-CHANNEL every
+hour when connected to a permitted network for updates. The Nexus 5X and Nexus 6P use
+legacy.copperhead.co (144.217.14.61) and Pixel phones use release.copperhead.co
+(144.217.14.110). These are currently hosted on OVH like the Copperhead site.</li>
+  <li>F-Droid performs update checks for enabled repositories. By default, the standard F-Droid
+repository and Copperhead repository are enabled. The Copperhead repository is hosted at
+fdroid.copperhead.co (142.44.162.254) on OVH.</li>
+  <li>As with other devices with a Qualcomm baseband (which provides GPS), <a href="https://en.wikipedia.org/wiki/GPS_signals#Almanac">GPS
+almanac</a> updates from Qualcomm are downloaded
+from https://xtrapath1.izatcloud.net/xtra3grc.bin, https://xtrapath2.izatcloud.net/xtra3grc.bin or
+https://xtrapath3.izatcloud.net/xtra3grc.bin. CopperheadOS has modified all references to these
+servers to use HTTPS rather than a mix of HTTP and HTTPS.</li>
+  <li>Connectivity checks designed to mimic a web browser user agent are performed by using HTTP and
+HTTPS to fetch standard URLs generating an HTTP 204 status code. This is used to detect when
+internet connectivity is lost on a network, which triggers fallback to other available networks
+if possible. These checks are designed to detect and handle captive portals which substitute
+the expected empty 204 response with their own web page. These need use a very common domain and
+URL in order to bypass whitelisting systems only permitting access to common domains / URLs so a
+domain like copperhead.co would be inadequate. CopperheadOS leaves these set to the standard four
+URLs to blend into the crowd of billions of other Android devices with and without Google Mobile
+Services performing the same empty GET requests:
+    <ul>
+      <li>HTTPS: https://www.google.com/generate_204</li>
+      <li>HTTP: http://connectivitycheck.gstatic.com/generate_204</li>
+      <li>HTTP fallback: http://www.google.com/gen_204</li>
+      <li>HTTP other fallback: http://play.googleapis.com/generate_204</li>
+    </ul>
+  </li>
+  <li>DNS connectivity and functionality tests</li>
+  <li>DNS resolution for other connections</li>
+</ul>
+
+<p>The connectivity checks are performed by both the OS itself and the hardened Chromium browser.</p>
+
+<h2 id="dns">DNS</h2>
+
+<p>Unlike stock Android, CopperheadOS uses Cloudflare’s DNS servers for network connectivity tests
+and the default fallback when the network doesn’t provide DNS servers.  This decision is based on
+Cloudflare providing <a href="https://developers.cloudflare.com/1.1.1.1/commitment-to-privacy/privacy-policy/privacy-policy/">a stellar privacy
+policy</a>
+compared to <a href="https://developers.google.com/speed/public-dns/privacy">the decent one</a> for Google
+Public DNS. Cloudflare DNS supports DNS-over-HTTPS and DNS-over-TLS so it will be possible to use
+it with Android’s upcoming DNS-over-TLS support.</p>
+
+<p>In practice, the default fallback is rarely used. DNS servers provided by the local network are
+preferred for both mobile data and Wi-Fi, since it avoids trusting an additional party with the
+information. The local network and ISP can still obtain all of the information when using an
+alternate DNS server. Hiding the information from them requires using a VPN to move the same trust
+to the VPN provider which is hopefully more worthy of that trust than the ISP. Even when using
+DNS-over-HTTPS or DNS-over-TLS, tracking IP addresses leaks nearly as much information and even
+HTTPS connections leak the hostname (unlike the path) so very little is truly being hidden by
+those technologies.</p>
+
+<p>Android 9.0 is adding support for overriding the default DNS servers with a DNS-over-TLS server
+chosen by the user. However, as noted above this won’t be able to hide much information from the
+local network and ISP. It has some value but is limited, particularly before there’s some form of
+encrypted SNI extension for TLS 1.3 to avoid leaking exact hostnames for HTTPS rather than only
+having imprecise reverse DNS lookups.</p>
+
+<p>It’s possible for apps implementing the VPN service feature to provide alternative DNS servers and
+it can be done without intercepting and routing network traffic like a real VPN. Some apps use
+this to implement features like domain-based content filtering.</p>
+
+<h2 id="app-spawning-time">App spawning time</h2>
+
+<p>You may notice that cold start app spawning time takes a bit longer (i.e. in the ballpark of
+100ms) than stock Android due to security centric <a href="technical_overview#exec-based-spawning-model">exec spawning
+feature</a>. This is most noticeable on the Nexus 5X
+due to it being the slowest supported device and is far less significant on current generation
+hardware. It doesn’t cause any performance cost after launching an app, and similarly doesn’t
+cause any extra latency if the app was already running / cached in the background.</p>
+
+<h2 id="updates-on-pixel-phones">Updates on Pixel phones</h2>
+
+<p>The update system implements automatic background updates. It checks for updates once per hour
+when there’s network connectivity and then downloads and installs updates in the background. It
+will pick up where it left off if downloads are interrupted, so you don’t need to worry about
+interrupting it. Similarly, interrupting the installation isn’t a risk because updates are
+installed to a secondary installation of CopperheadOS which only becomes the active installation
+after the update is complete. Once the update is complete, you’ll be informed with a notification
+and simply need to reboot with the button in the notification or via a normal reboot. If the new
+version fails to boot, the OS will roll back to the past version and the updater will attempt to
+download and install the update again.</p>
+
+<p>The updater will use incremental updates to download only changes rather than the whole OS unless
+the current version is behind the current release by more than 3 versions. As long as you have
+working network connectivity on a regular basis and reboot when asked, you’ll almost always be on
+one of the past couple versions of the OS which will minimize bandwidth usage since incrementals
+will always be available. If you fall more than 3 versions behind, it will download a large full
+update shipping the full OS so it can update from any version.</p>
+
+<p>The updater works while the device is locked / idle, including before the first unlock since it’s
+explicitly designed to be able to run before decryption of user data.</p>
+
+<h3 id="settings">Settings</h3>
+
+<p>The settings are available in the Settings app in System -&gt; About phone -&gt; Update settings.</p>
+
+<p>The “Release channel” setting can be changed from the default Stable channel to the Beta channel
+if you want to help with testing. The Beta channel will usually simply follow the Stable channel,
+but the Beta channel may be used to experiment with new features.</p>
+
+<p>The “Permitted networks” setting controls which networks will be used to perform updates. It
+defaults to using any network connection. It can be set to “Non-roaming” to disable it when the
+cellular service is marked as roaming or “Unmetered” to disable it on cellular networks and also
+Wi-Fi networks marked as metered.</p>
+
+<p>The “Require battery above warning level” setting controls whether updates will only be performed
+when the battery is above the level where the warning message is shown. The standard value is at
+15% capacity.</p>
+
+<p>Enabling the opt-in “Automatic reboot” setting allows the updater to reboot the device after an
+update once it has been idle for a long time. When this setting is enabled, a device can take care
+of any number of updates completely automatically even if it’s left completely idle.</p>
+
+<h3 id="update-security">Update security</h3>
+
+<p>The update server isn’t a trusted party since updates are signed and verified along with downgrade
+attacks being prevented. The update protocol doesn’t send identifiable information to the update
+server and works well over a VPN / Tor. Copperhead isn’t able to comply with a government order to
+build, sign and ship a malicious update to a specific user’s device based on information like the
+IMEI, serial number, etc. The update server only ends up knowing the IP address used to connect to
+it and the version being upgraded from based on the requested incremental.</p>
+
+<p>Android updates support serialno constraints to make them validate only on a certain device but
+CopperheadOS rejects any update with a serialno constraint for both the Stable and Beta channels.</p>
+
+<h3 id="disabling-updates">Disabling updates</h3>
+
+<p>It’s highly recommended to leave automatic updates enabled and to configure the permitted networks
+if the bandwidth usage is a problem on your mobile data connection. However, it’s possible to turn
+off the update client by going to Settings -&gt; Apps, enabling Show system via the menu, selecting
+CopperheadOS Updater and disabling the app. If you do this, you’ll need to remember to enable it
+again to start receiving updates.</p>
+
+<h2 id="authentication--encryption">Authentication / encryption</h2>
+
+<p>Using a strong passphrase is recommended. CopperheadOS extends the arbitrary default maximum
+passphrase length from 16 characters to 64 characters.</p>
+
+<p>Pattern unlock is strongly discouraged and may be turned into a hidden option in the future.</p>
+
+<p>Fingerprint unlock acts as an extremely convenient secondary unlock mechanism. However, it opens
+up weaknesses compared to knowledge-based authentication. It’s not usable after a reboot for the
+first unlock or after 48 hours and it doesn’t reduce authentication or encryption security in
+those cases. It has the important redeeming quality of making a strong passphrase as the main
+unlock mechanism very convenient and the placement of the scanner can make it even more convenient
+than swipe to unlock or even the no unlock mechanism option (i.e. power button only).</p>
+
+<p>The long-term plan for CopperheadOS is to build upon fingerprint unlock by <a href="https://github.com/copperhead/bugtracker/issues/451">adding support for
+setting an optional knowledge-based 2nd
+factor</a>. Once that’s implemented, the only
+recommended authentication setups will be the following, from strongest to weakest:</p>
+
+<ol>
+  <li>Strong passphrase</li>
+  <li>Strong passphrase with fingerprint + PIN (or weaker passphrase) as a secondary unlock mechanism</li>
+  <li>Strong passphrase with fingerprint as a secondary unlock mechanism</li>
+</ol>
+
+<p>Until it’s implemented, using a PIN or a weak passphrase instead of the second option can make
+sense. It’s much weaker in the case where fingerprint unlock isn’t available, i.e. after a reboot
+or the 48 hour timeout.</p>
+
+<p>CopperheadOS supports randomizing the PIN entry layout via a toggle in Settings -&gt; Security &amp;
+Location -&gt; Passwords -&gt; Scramble PIN layout, which is disabled by default.  This will apply to
+the planned 2nd factor fingerprint unlock mechanism in addition to using a PIN as the main unlock
+method, which will be discouraged once there’s a better option available.</p>
+
+<h3 id="fingerprint-unlock-attempts">Fingerprint unlock attempts</h3>
+
+<p>CopperheadOS disables fingerprint unlock after 5 failed attempts, unlike stock Android which
+allows 20 attempts with 30 second delays after each 5 failed attempts.</p>
+
+<p>You can use this to disable the fingerprint scanner by intentionally making invalid unlocking
+attempts. The device will vibrate on invalid unlocking attempts and will stop vibrating once
+fingerprint unlock has been disabled.</p>
+
+<h2 id="keyboard-personalized-suggestions">Keyboard personalized suggestions</h2>
+
+<p>The keyboard has the option of maintaining an internal database to improve suggestions based on
+past input. It’s entirely local and inaccessible to any other apps like all internal app data, but
+CopperheadOS disables it by default to avoid gathering persistent statistics about user input that
+may be valuable to an attacker that has compromised the device. It can be enabled again in
+Settings -&gt; Languages &amp; input -&gt; Virtual keyboard -&gt; CopperheadOS Keyboard -&gt; Text correction -&gt;
+Personalized suggestions, which is also accessible by holding the comma key on the keyboard and
+pressing CopperheadOS Keyboard Settings.</p>
+
+<h2 id="f-droid-repository">F-Droid repository</h2>
+
+<p>The CopperheadOS F-Droid repository is included in the default set. For reference:</p>
+
+<ul>
+  <li>Repository URL: https://fdroid.copperhead.co/repo</li>
+  <li>Repository fingerprint: F0D4EB1193AD82FEB224BD1174B6FBD89A39D8ED988C9FFF2ADD0DCD1C4E271B</li>
+</ul>
+
+<p>It’s only intended to be useful to CopperheadOS users. Nothing from there is guaranteed to work
+elsewhere and issues on other operating systems should not be reported.</p>
+
+<h2 id="app-recommendations">App recommendations</h2>
+
+<h3 id="built-in-user-facing-apps">Built-in user-facing apps</h3>
+
+<p>CopperheadOS includes most of the standard Android Open Source Project (AOSP) apps.</p>
+
+<p>The following apps are actively developed as part of AOSP and receive both bug fixes and new
+features. Using these apps rather than third party ones is highly recommended:</p>
+
+<ul>
+  <li>Calculator</li>
+  <li>Clock</li>
+  <li>Contacts</li>
+  <li>Files</li>
+  <li>Launcher</li>
+  <li>Phone</li>
+  <li>Settings</li>
+</ul>
+
+<p>The following apps are no longer actively developed as part of AOSP and only receive important
+security fixes. These apps will keep working indefinitely since Android is backwards compatible
+but they won’t receive new features or overhauls. These are candidates for replacement down the
+road, but the replacements need to be a good fit for CopperheadOS:</p>
+
+<ul>
+  <li>Camera</li>
+  <li>Email</li>
+  <li>Gallery</li>
+  <li>Music</li>
+  <li>Search (launcher icon is removed in CopperheadOS, but it’s included for compatibility)</li>
+</ul>
+
+<p>Some of the AOSP apps have been replaced in CopperheadOS:</p>
+
+<ul>
+  <li>Calendar -&gt; Etar (maintained derivative of the backend-agnostic AOSP Calendar app, can be used
+with any service exposing a calendar backend via an app)</li>
+  <li>Browser -&gt; Chromium (hardened browser developed by CopperheadOS based on Chromium, see <a href="#browsing">the
+section on browsing</a>)</li>
+  <li>Messaging -&gt; Silence (replaced to provide end-to-end SMS encryption)</li>
+</ul>
+
+<p>CopperheadOS also includes some additional built-in apps. These apps are included to provide
+functionality missing in AOSP compared to stock Android or in the case of Net Monitor because it
+can’t work if it’s not integrated with the OS <a href="#network-connection-information--statistics">due to CopperheadOS privacy
+enhancements</a>.</p>
+
+<ul>
+  <li>F-Droid: app repositories and updates</li>
+  <li>Offline Calendar: local calendar storage backend as an alternative to cloud-based backends</li>
+  <li>Net Monitor: monitoring network connections</li>
+  <li>PDF Viewer: hardened PDF viewer developed alongside CopperheadOS</li>
+</ul>
+
+<h3 id="browsing">Browsing</h3>
+
+<p>CopperheadOS ships hardened builds of Chromium and the robust rendering sandbox makes it the most
+secure option available. Since the Android WebView is provided by Chromium, most apps render web
+content using the CopperheadOS Chromium builds. For example, DuckDuckGo uses the WebView in their
+search app and the CopperheadOS PDF Viewer uses it to render PDF documents. CopperheadOS enables
+the rendering sandbox for the WebView since Android Nougat and Google will be enabling it with
+Android O, but the standalone browser sandbox is currently more restrictive. The WebView is also
+at the mercy of the security of the app using it, since apps can add their own interfaces and can
+grant access to the same files and other content they can access outside of the WebView.</p>
+
+<p>Brave is based on Chromium with additional features like built-in ad-blocking, HTTPS Everywhere
+and fingerprinting protection. However, it’s not currently available in the main F-Droid
+repository and would be missing the extra hardening. In the future, we’ll likely provide hardened
+builds of Brave for CopperheadOS via our F-Droid repository.</p>
+
+<p>Avoid Gecko-based browsers like Firefox. They’re significantly less secure and are among the few
+apps not able to benefit from the full set of CopperheadOS hardening features due to shipping
+their own linker and custom JIT compiler within the app process. The WebView is inherently
+Chromium-based so using Gecko also means exposing the attack surface of two browser engines rather
+than one. Firefox Focus currently uses the system WebView rather than Gecko but Mozilla <a href="https://github.com/mozilla-mobile/focus-android/issues/13">plans to
+change that</a>.</p>
+
+<h3 id="red-shift">Red shift</h3>
+
+<p>On Pixels, use Settings -&gt; Display -&gt; Night Light instead of a third party app requiring a grant
+of the special “Display over other apps” permission.</p>
+
+<h3 id="messaging">Messaging</h3>
+
+<p>Recommended messaging app preference list:</p>
+
+<ol>
+  <li>Conversations + OMEMO</li>
+  <li>Noise or Signal to communicate with Signal users and for encrypted calls</li>
+  <li>Silence encrypted SMS to communicate with Android users without data connections</li>
+  <li>Other apps with end-to-end encryption if you can’t convince contacts to install
+one of the above (Wire, WhatsApp, etc.)</li>
+  <li>Apps with transport encryption without end-to-end encryption</li>
+  <li>Unencrypted SMS or apps without transport encryption</li>
+</ol>
+
+<h4 id="conversations">Conversations</h4>
+
+<p>The recommended messaging client is Conversations. It’s an XMPP client interoperable with other
+XMPP clients and servers. It supports end-to-end encryption via robust cryptography (OMEMO) based
+on the Signal protocol along with OTR and PGP for backwards compatibility with lesser clients.
+It’s one of very few apps with efficient push messaging without needing Google Cloud Messaging
+(GCM). It also supports end-to-end encrypted group chat.</p>
+
+<p>Conversations has an official XMPP server with all of the necessary extensions for full
+functionality. It costs 8 EUR / year after the 6 month free trial.  Using the official server to
+support the project is recommended, but there are <a href="https://gultsch.de/compliance_ranked.html">other
+options</a> without a subscription fee.  We don’t
+currently have a recommendation about which ones to prefer, beyond sticking to those with support
+for every XEP other than XEP-0357 (which is for GCM, rather than the standard push mechanism).</p>
+
+<h4 id="signal">Signal</h4>
+
+<p>Noise, a rebranded build of Signal available outside the Play Store is available in the Copperhead
+F-Droid repository. It has full support for all of the Signal features including voice and video
+calls but it isn’t optimized for low impact on battery life like Conversations. It used to be a
+fork removing the hard dependency on Google Play Services but since Signal 3.30.0 that is not a
+hard dependency anymore. Noise doesn’t change a single line of code in Signal, only the branding.</p>
+
+<p>The official website releases of Signal can be installed <a href="https://signal.org/android/apk/">from their
+site</a> but this requires temporarily enabling installing apps from
+your browser (it still requires consent each time). Signal will check for updates to itself and
+notify about them but it can’t support the option of automatic upgrades. The upgrades need to be
+installed by hand and require enabling app installs from Signal (it still requires consent each
+time).</p>
+
+<p>You can choose between installing Noise via F-Droid and receiving updates via F-Droid or using the
+Signal website release and manually installing the updates via the notifications it creates.
+Ideally, the official releases of Signal would be available via an official Signal F-Droid
+repository so that we wouldn’t need Noise anymore, at least after Signal ships a more complete
+backup / import mechanism so a full migration is possible.</p>
+
+<h4 id="silence">Silence</h4>
+
+<p>CopperheadOS replaces the AOSP Messaging app with Silence to provide support for encrypted SMS. It
+isn’t really recommended to prefer it over data-based encrypted messaging apps, but rather to make
+use of it for communicating with contacts without data connections, or for all messaging if you
+don’t have a data connection yourself. It makes sense to leave it as the default SMS app even if
+you’re using an app like Noise able to act as the default SMS client.</p>
+
+<h4 id="whatsapp">WhatsApp</h4>
+
+<p>WhatsApp works on CopperheadOS, but it isn’t currently available in a convenient way. The best way
+to use it is probably installing the Amazon Appstore as an apk and then installing it from there,
+so that you have updates for it along with the Appstore which will update itself.</p>
+
+<p>We might consider trying to convince Facebook to either host an F-Droid repository or permit
+redistribution of it.</p>
+
+<h3 id="youtube">YouTube</h3>
+
+<p>Use the NewPipe app from F-Droid if you want more functionality than the mobile site.</p>
+
+<h3 id="maps">Maps</h3>
+
+<h4 id="simple-fast-and-highly-usable">Simple, fast and highly usable</h4>
+
+<p>The all around best option for basic map and navigation functionality is
+<a href="https://maps.me/">maps.me</a> but it has some privacy and security issues.</p>
+
+<p>The com.github.axet.maps fork is available in the standard F-Droid repository with the ads,
+binaries, etc. stripped out.</p>
+
+<p>The official maps.me apk is <a href="https://maps.me/apk/">available on their site</a> and the Play Store
+version works perfectly well on CopperheadOS too.</p>
+
+<p>The main issue with it is that there’s no way to have it use internal app storage instead of using
+shared storage for internal app data like settings and map downloads. The data is exposed to other
+apps with storage access and could be tampered with or simply watched for location information. It
+might be something that the fork would be willing to address. Feel free to encourage both projects
+to take a more secure approach or at least offer it as an option.</p>
+
+<h4 id="functionality-rich">Functionality rich</h4>
+
+<p>OsmAnd (OpenStreetMap Automated Navigation Directions) can be installed from F-Droid and provides
+map viewing and mobile navigation. It has the killer feature of optional support for downloading
+the OpenStreetMap database for chosen regions. In addition to the obvious advantage of not having
+a dependency on an internet connection, offline mapping offers more privacy. It’s recommended to
+use the offline mode if you have enough storage space to spare. <strong>Note that it’s important to
+configure OsmAnd to use the internal storage directory:</strong> go into the menu, then Settings, General
+settings, select the “Data storage folder” option, select the edit button and set it to the
+“Internal application memory” option.</p>
+
+<p>Note that OsmAnd sends the semi-persistent ANDROID_ID to their server on connections. ANDROID_ID
+will become less identifying in future CopperheadOS releases by default and further user control
+will be offered, but it reflects poorly on OsmAnd.</p>
+
+<h4 id="google-maps">Google maps</h4>
+
+<p>If you really need Google Maps, you can use their web application. It’s not as nice as the mobile
+app but the core functionality other than turn-by-turn navigation is there.</p>
+
+<h3 id="advanced-camera-features">Advanced camera features</h3>
+
+<p>Install the Open Camera app from F-Droid and enable “Use Camera2 API” in the settings menu. This
+enables support for features like manual ISO configuration and HDR (<strong>not</strong> HDR+) mode.</p>
+
+<p>On the Pixel 2 and Pixel 2 XL, HDR+ via the Pixel Visual Core is available to apps on CopperheadOS
+with support for it. Unfortunately, the AOSP Camera app doesn’t currently support it.</p>
+
+<h3 id="uber">Uber</h3>
+
+<p>Use <a href="https://m.uber.com/">https://m.uber.com/</a> instead of the Android app. Open it with Chromium
+and select ‘Add to Home screen’ from the menu. Unlike most sites, the Uber web app is set up to
+act as a standalone app when added to the home screen rather than the launcher only acting as a
+bookmark and opening a Chromium tab. The map isn’t enabled by default since the web app is aimed
+at the niche of users with low bandwidth but it can be enabled.</p>
+
+<h3 id="chromecast">Chromecast</h3>
+
+<p>VLC supports casting to Chromecast devices, so support within the OS provided by Play Services
+isn’t required.</p>
+
+<h3 id="installing-apps-from-the-play-store">Installing apps from the Play Store</h3>
+
+<p>The Yalp Store app on F-Droid can be used to install apps from the Play Store. Before using it to
+install an app, press the menu button, press Settings and enable the toggle for ‘Download to
+internal storage’ to make sure Yalp doesn’t download apps to shared storage where other apps with
+storage access could potentially tamper with them before installation. Yalp will still demand the
+Storage permission even though it isn’t required though.</p>
+
+<p>It’s not clear how Google feels about the Yalp Store app so we don’t recommend using your own
+account credentials unless it’s a throwaway account. Stick to the Yalp Store credentials. If you
+need apps that you’ve purchased, consider using F-Droid’s support for swapping apps between
+devices to get them from a trusted device with the Play Store. Note that many paid apps use DRM
+which won’t work without Play Services.</p>
+
+<p>Many apps from the Play Store use Google Play Services, but lots of those will still work fine on
+CopperheadOS. Some functionality like push notifications may not be available if the apps don’t
+implement fallbacks for systems without Play Services included in the OS.</p>
+
+<p>Be careful when installing apps from the Play Store and granting permissions to them since overall
+they’re a lot less trustworthy than the apps in the F-Droid repositories enabled by default on
+CopperheadOS. There are apps in F-Droid with serious privacy and security issues but there aren’t
+any known cases of malicious apps and they tend to be a lot more respectful of privacy with most
+of the major deviations from that marked in the F-Droid entries for those apps.</p>
+
+<h2 id="verified-boot">Verified boot</h2>
+
+<p>CopperheadOS only supports devices with verified boot support. The hardware verifies authenticity
+and integrity of firmware and the core operating system on every boot. The core operating system
+verifies the entire rest of the operating system, providing full verified boot for the OS. Every
+installation is guaranteed to be bit-for-bit identical at a storage level, otherwise it wouldn’t
+work. Updating the OS updates it to a pristine installation of a new release.</p>
+
+<p>A fresh installation or an incremental update shipping only changes to blocks provide exactly the
+same result. If any block fails to verify, the OS has error correction data to attempt to fix the
+issue before verifying the fixed block again. If the corruption cannot be fixed, an error will be
+displayed and it will reboot.</p>
+
+<p>An attacker that has successfully gained root access via an exploit chain <em>cannot</em> simply modify
+any of the OS partitions. They would need to have an exploit for the verified boot process to
+exploit it as it reads their altered data which is an extremely high bar. This greatly raises the
+bar for privileged persistence. An attacker is forced to persist as an unprivileged third party
+app, requiring exploitation of the OS via an unpatched vulnerability to gain back control. Factory
+resets wipe userdata, guaranteeing that an attacker loses persistence unless they have a verified
+boot bypass. OS updates have a high chance of breaking any attempt to exploit the OS again too.</p>
+
+<p>On the Pixel 2 and later, rollback protection is provided for the OS. This prevents an attacker
+with root access from downgrading the OS to a previous version of the OS as a way to roll it back
+to a version where they have working exploits for verified boot, etc. The Pixel 2 and later also
+provide substantially better enforcement of the CopperheadOS public key.</p>
+
+<p>Verified boot is primarily about preventing attacker persistence, but it also greatly raises the
+cost of tampering with a device based on physical access. This is especially true for the Pixel 2.</p>
+
+<p>For more technical details, see the <a href="/verified_boot">documentation on verified boot</a>.</p>
+
+<h3 id="verified-boot-attestation-pixel-2-and-later">Verified boot attestation (Pixel 2 and later)</h3>
+
+<p>Copperhead’s Auditor app uses hardware security features on supported devices to validate the
+integrity of the operating system from another Android device.  It will verify that the device is
+running either the stock operating system or CopperheadOS with the bootloader locked and that no
+tampering with the operating system has occurred. It will also detect downgrades to a previous
+version. Supported CopperheadOS devices:</p>
+
+<ul>
+  <li>Google Pixel 2</li>
+  <li>Google Pixel 2 XL</li>
+</ul>
+
+<p>It cannot be bypassed by modifying or tampering with the operating system (OS) because it receives
+signed device information from the device’s Trusted Execution Environment (TEE) including the
+verified boot state, operating system variant and operating system version. The initial
+verification has some security provided by the Google root certificate.  The verification is much
+more meaningful after the initial pairing as the app primarily relies on Trust On First Use via
+pinning.</p>
+
+<p>Usage instructions:</p>
+
+<p>The device being verified (Auditee) must be one of the supported devices. The device performing
+verification (Auditor) just needs to be any Android 7.0+ compatible device with a camera.</p>
+
+<ol>
+  <li>press Auditor on the device that will be verifying the Auditee</li>
+  <li>press Auditee on the device that’s going to be verified</li>
+  <li>point the camera of the Auditee at the QR code on the Auditor to read the challenge</li>
+  <li>tap the QR code on the Auditor to advance ahead (if you do this too early, you can press back)</li>
+  <li>point the camera of the Auditor at the QR code on the Auditee to read the attestation</li>
+  <li>view verification of the attestation results</li>
+</ol>
+
+<p>An Auditor can verify any number of different Auditee devices. It shows a fingerprint and the
+first / last verification time in successful paired attestation results. An Auditee can be
+verified by any number of Auditors but there will be a different fingerprint for each unique
+pairing rather than the same fingerprint shown on each Auditor for the same Auditee.</p>
+
+<!-- The Auditor app is available in the default enabled Copperhead F-Droid repository. It has similar
+licensing as the operating system, i.e. free non-commercial usage for devices not purchased from
+Copperhead. Customers that have bought CopperheadOS devices are granted a free commercial license
+for the app on those devices. For usage outside CopperheadOS, it's [available on the Play Store as
+a paid app permitting commercial
+usage](https://play.google.com/store/apps/details?id=co.copperhead.attestation) and [free on
+GitHub for non-commercial usage](https://github.com/copperhead/Attestation/releases). -->
+
+<h3 id="verified-boot-fingerprint">Verified boot fingerprint</h3>
+
+<p>The bootloader will display a notice with the fingerprint of the verified boot key since it isn’t
+the built-in OEM key. Current devices use the TEE to prevent the key from being changed, but the
+implementation has limitations and there is some value in manually confirming it. The Pixel 2 (XL)
+have much more stringent enforcement of the key along with rollback protection.</p>
+
+      </section>
+    </div>
+
+    
+  </body>
+  <footer>
+    <style>
+      .footer
+      {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        background-color: #000000;
+        color: white;
+        text-align: center;
+      }
+    </style>
+
+    <div class="footer">
+      <a href="https://copperhead.co/" class="btn">Copperhead Home</a></li>
+      <a href="https://copperhead.co/android" class="btn">Android</a></li>
+      <a href="mailto:info@copperhead.co" class="btn">Contact</a></li>
+      <a href="https://twitter.com/CopperheadSec" class="btn">Twitter</a></li>
+    </div>
+  </footer>
+</html>

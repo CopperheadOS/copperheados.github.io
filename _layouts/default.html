@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="{{ site.lang | default: "en-US" }}">
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{{ '/assets/css/style.css?v=' | append: site.github.build_revision | relative_url }}">
+
+{% seo %}
+  </head>
+
+  <body>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <header>
+      <div class="container">
+        <div class="clearfix">
+          <p>
+            <a href="https://copperhead.co/android">
+              <img src="/assets/images/logo_circle_white_small.png">
+            </a>
+            <h1>CopperheadOS Documentation Repository</h1>
+          </p>
+        </div>
+        <div id='subpage-navbar' class='container'>
+            <div class='row'>
+                <main class='subpage'>
+                    <ol class='docs-toc'>
+                        <ul>
+                          <li><a href="/">Home</a></li>
+                          <li><a href="/updates">Updates</a></li>
+                          <li><a href="/usage_guide">Usage Guide</a></li>
+                          <li><a href="/technical_overview">Overview</a></li>
+                          <li><a href="/verified_boot">Verified Boot</a></li>
+                          <li><a href="/building">Build</a></li>
+                          <li><a href="/install">Install</a></li>
+                          <li><a href="/devices">Devices</a></li>
+                          <li><a href="/licensing">Licensing</a></li>
+                        </ul>
+                    </ol>
+                </main>
+            </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        {{ content }}
+      </section>
+    </div>
+
+    {% if site.google_analytics %}
+      <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        ga('create', '{{ site.google_analytics }}', 'auto');
+        ga('send', 'pageview');
+      </script>
+    {% endif %}
+  </body>
+  <footer>
+    <style>
+      .footer
+      {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        background-color: #000000;
+        color: white;
+        text-align: center;
+      }
+    </style>
+
+    <div class="footer">
+      <a href="https://copperhead.co/" class="btn">Copperhead Home</a></li>
+      <a href="https://copperhead.co/android" class="btn">Android</a></li>
+      <a href="mailto:info@copperhead.co" class="btn">Contact</a></li>
+      <a href="https://twitter.com/CopperheadSec" class="btn">Twitter</a></li>
+    </div>
+  </footer>
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/css/style.css?v=3b961330d90c3bca66ff650f33c2e11db3e49cc1">
+
+<!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Copperhead Auditor app privacy policy | CopperheadOS Documentation Repository</title>
+<meta name="generator" content="Jekyll v3.8.5" />
+<meta property="og:title" content="Copperhead Auditor app privacy policy" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Privacy policy for the attestation app" />
+<meta property="og:description" content="Privacy policy for the attestation app" />
+<link rel="canonical" href="http://localhost:4000/auditor_privacy_policy.html" />
+<meta property="og:url" content="http://localhost:4000/auditor_privacy_policy.html" />
+<meta property="og:site_name" content="CopperheadOS Documentation Repository" />
+<script type="application/ld+json">
+{"description":"Privacy policy for the attestation app","@type":"WebPage","url":"http://localhost:4000/auditor_privacy_policy.html","headline":"Copperhead Auditor app privacy policy","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+  </head>
+
+  <body>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <header>
+      <div class="container">
+        <div class="clearfix">
+          <p>
+            <a href="https://copperhead.co/android">
+              <img src="/assets/images/logo_circle_white_small.png">
+            </a>
+            <h1>CopperheadOS Documentation Repository</h1>
+          </p>
+        </div>
+        <div id='subpage-navbar' class='container'>
+            <div class='row'>
+                <main class='subpage'>
+                    <ol class='docs-toc'>
+                        <ul>
+                          <li><a href="/">Home</a></li>
+                          <li><a href="/updates">Updates</a></li>
+                          <li><a href="/usage_guide">Usage Guide</a></li>
+                          <li><a href="/technical_overview">Overview</a></li>
+                          <li><a href="/verified_boot">Verified Boot</a></li>
+                          <li><a href="/building">Build</a></li>
+                          <li><a href="/install">Install</a></li>
+                          <li><a href="/devices">Devices</a></li>
+                          <li><a href="/licensing">Licensing</a></li>
+                        </ul>
+                    </ol>
+                </main>
+            </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <h1 id="copperhead-auditor-app-privacy-policy">Copperhead Auditor app privacy policy</h1>
+
+<p>This app uses the camera permission to scan QR codes from the app running on another device. The
+images captured by the camera are not stored and the data is not used beyond decoding QR codes
+used to directly implement the functionality of the app.</p>
+
+<p>The QR codes do not contain any personal information. The QR codes contain data for performing
+verification of OS integrity and the identity of the app installation. The identity is randomly
+generated and reset by clearing the app data or uninstalling / reinstalling the app. The codes
+also contain some information gathered from the OS to display to the user on the device doing
+verification, which may be extended in the future:</p>
+
+<ul>
+  <li>Whether the user profile is secured with an authentication mechanism (yes or no)</li>
+  <li>Whether an accessibility service is activity (yes or no)</li>
+  <li>Whether a device manager is active (yes or no)</li>
+</ul>
+
+<p>The app does not work with any other personal or sensitive data. It doesn’t make network requests
+or communicate with other apps. Other than the user-initiated QR code generation, the app keeps
+all data internal and inaccessible to other apps or any servers.</p>
+
+<p>On the Auditee side, the only persistent data is a signing key. On the Auditor side, the only
+persistent data is the pairing information for each verified device:</p>
+
+<ul>
+  <li>Pinned public key certificate chain</li>
+  <li>Device variant (Pixel 2 vs. Pixel 2 XL)</li>
+  <li>Operating system (Stock vs. CopperheadOS)</li>
+  <li>OS version (at the time of the last verification)</li>
+  <li>OS patch level (at the time of the last verification)</li>
+  <li>App version (at the time of the last verification)</li>
+  <li>First verification time</li>
+  <li>Last verification time</li>
+</ul>
+
+<p>No data is stored if the device does not pass verification. More data may be pinned in the future.</p>
+
+<p>Alternatives to QR codes may be provided in the future and will be similarly user-initiated. For
+example, if support for remote attestation via the network is added, it is going to require the
+user to explicitly set it up with a chosen server.</p>
+
+<p>Technical details on the operation of the app are <a href="https://github.com/copperhead/Attestation/blob/18fc1c9040ab25b79656299aa04d2453a372a22c/app/src/main/java/co/copperhead/attestation/AttestationProtocol.java#L80-L148">documented in the source
+code</a>
+which is published in full for non-commercial use primarily so that the implementation can be
+audited and tested. Paying others to conduct commercial audits is permitted despite the
+non-commercial clause and you can contact us for explicit permission if you feel it’s necessary.</p>
+
+      </section>
+    </div>
+
+    
+  </body>
+  <footer>
+    <style>
+      .footer
+      {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        background-color: #000000;
+        color: white;
+        text-align: center;
+      }
+    </style>
+
+    <div class="footer">
+      <a href="https://copperhead.co/" class="btn">Copperhead Home</a></li>
+      <a href="https://copperhead.co/android" class="btn">Android</a></li>
+      <a href="mailto:info@copperhead.co" class="btn">Contact</a></li>
+      <a href="https://twitter.com/CopperheadSec" class="btn">Twitter</a></li>
+    </div>
+  </footer>
+</html>

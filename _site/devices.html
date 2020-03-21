@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/css/style.css?v=8f29f83680bc04866e733357c42327d5a003d9f7">
+
+<!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Device comparison | CopperheadOS Documentation Repository</title>
+<meta name="generator" content="Jekyll v3.8.5" />
+<meta property="og:title" content="Device comparison" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Comparison between past and current devices supported by CopperheadOS" />
+<meta property="og:description" content="Comparison between past and current devices supported by CopperheadOS" />
+<link rel="canonical" href="http://localhost:4000/devices.html" />
+<meta property="og:url" content="http://localhost:4000/devices.html" />
+<meta property="og:site_name" content="CopperheadOS Documentation Repository" />
+<script type="application/ld+json">
+{"url":"http://localhost:4000/devices.html","headline":"Device comparison","description":"Comparison between past and current devices supported by CopperheadOS","@type":"WebPage","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+  </head>
+
+  <body>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <header>
+      <div class="container">
+        <div class="clearfix">
+          <p>
+            <a href="https://copperhead.co/android">
+              <img src="/assets/images/logo_circle_white_small.png">
+            </a>
+            <h1>CopperheadOS Documentation Repository</h1>
+          </p>
+        </div>
+        <div id='subpage-navbar' class='container'>
+            <div class='row'>
+                <main class='subpage'>
+                    <ol class='docs-toc'>
+                        <ul>
+                          <li><a href="/">Table of Contents</a></li>
+                          <li><a href="/updates">Updates</a></li>
+                          <li><a href="/usage_guide">Usage Guide</a></li>
+                          <li><a href="/technical_overview">Overview</a></li>
+                          <li><a href="/verified_boot">Verified Boot</a></li>
+                          <li><a href="/building">Build</a></li>
+                          <li><a href="/install">Install</a></li>
+                          <li><a href="/devices">Devices</a></li>
+                          <li><a href="/licensing">Licensing</a></li>
+                        </ul>
+                    </ol>
+                </main>
+            </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <div style="overflow-x:auto;">
+          <h1 class="no_toc" id="copperheados-device-comparison">CopperheadOS device comparison</h1>
+
+<ul id="markdown-toc">
+  <li><a href="#minimum-requirements-for-copperheados-support" id="markdown-toc-minimum-requirements-for-copperheados-support">Minimum requirements for CopperheadOS support</a>    <ul>
+      <li><a href="#expected-near-future-requirements" id="markdown-toc-expected-near-future-requirements">Expected near future requirements</a></li>
+      <li><a href="#further-future-requirements" id="markdown-toc-further-future-requirements">Further future requirements</a></li>
+    </ul>
+  </li>
+  <li><a href="#support-status" id="markdown-toc-support-status">Support status</a></li>
+  <li><a href="#driver-model" id="markdown-toc-driver-model">Driver model</a></li>
+  <li><a href="#bootloader-firmware" id="markdown-toc-bootloader-firmware">Bootloader firmware</a></li>
+  <li><a href="#wifi-driver--firmware" id="markdown-toc-wifi-driver--firmware">WiFi driver / firmware</a></li>
+  <li><a href="#trusted-execution-environment-tee-firmware" id="markdown-toc-trusted-execution-environment-tee-firmware">Trusted Execution Environment (TEE) firmware</a></li>
+  <li><a href="#weaver" id="markdown-toc-weaver">Weaver</a>    <ul>
+      <li><a href="#disk-encryption-keys" id="markdown-toc-disk-encryption-keys">Disk encryption keys</a></li>
+    </ul>
+  </li>
+  <li><a href="#memory" id="markdown-toc-memory">Memory</a></li>
+  <li><a href="#kernel-hardening" id="markdown-toc-kernel-hardening">Kernel hardening</a></li>
+  <li><a href="#encryption" id="markdown-toc-encryption">Encryption</a></li>
+</ul>
+
+<p>This is a comparison of the security features of devices currently or previously supported by
+CopperheadOS along with those we plan to support in the future.</p>
+
+<p>Obsolete devices no longer supported by Android or CopperheadOS like the Nexus 5 are included to
+document historical progress.</p>
+
+<p>HiKey and HiKey 960 are supported devices but aren’t compared here because they’re primarily
+development platforms and it wouldn’t make sense to compare the (lack of) security properties.</p>
+
+<p>The Samsung Galaxy S4 International LTE variant (jfltexx) used to be supported by CopperheadOS
+Alpha but we see that as a distinct operating system from CopperheadOS Beta and later where it
+became directly based on the Android Open Source Project and moved to fully signed production
+builds.</p>
+
+<h2 id="minimum-requirements-for-copperheados-support">Minimum requirements for CopperheadOS support</h2>
+
+<p>The following security properties are provided by our current generation hardware targets and are
+considered hard requirements for expanding CopperheadOS support to future devices:</p>
+
+<ul>
+  <li>Verified boot, including:
+    <ul>
+      <li>verification of all firmware</li>
+      <li>verification of the entire operating system</li>
+      <li>public key fingerprint display</li>
+      <li>public key enforcement for the operating system via tamper evident storage</li>
+      <li>rollback protection for the operating system via tamper evident storage</li>
+    </ul>
+  </li>
+  <li>Hardware key derivation support
+    <ul>
+      <li>key for a substantial portion of the derivation work unavailable to firmware/software</li>
+      <li>enforcement of escalating delays via a dedicated HSM</li>
+    </ul>
+  </li>
+  <li>Hardware-backed keystore (TEE or better)
+    <ul>
+      <li>key + verified boot attestation (does not need to use the Google key attestation root)</li>
+    </ul>
+  </li>
+  <li>Hardware random number generator for use as an input to the kernel CSPRNG
+    <ul>
+      <li>Must provide adequate entropy in early boot before drivers to use specialized hardware are
+available. Implementing EFI_RANDOM_PROTOCOL works. Setting /chosen/kaslr-seed in the
+device tree isn’t good enough as it’s only enough for KASLR (64-bit).</li>
+    </ul>
+  </li>
+  <li>Treble driver model (uninvasive support and sandboxed HALs)</li>
+  <li>Ongoing maintenance including security updates for all firmware and device-specific components
+with at least 2 years of support remaining for firmware, etc. from every vendor involved.</li>
+  <li>A/B update support including automatic rollback on initial boot failure and verified boot
+integration for rollback protection</li>
+  <li>64-bit CPU</li>
+  <li>LPDDR4 or later with TRR support to mitigate rowhammer</li>
+  <li>Driver support for at least Linux 4.4 (ideally mainline drivers). Linux 4.9 is the baseline for
+devices launched in 2018.</li>
+  <li>No closed-source drivers in the kernel (binary drivers can be audited, but not easily hardened)</li>
+  <li>Proper scanning MAC randomization support avoiding identifiers other than the MAC address like a
+non-randomized probe sequence number</li>
+</ul>
+
+<p>CopperheadOS can be <a href="/building#device-porting-process">ported to other devices</a> but
+will only officially support devices meeting these requirements.</p>
+
+<h3 id="expected-near-future-requirements">Expected near future requirements</h3>
+
+<p>We expect to make the following into requirements by the end of 2018:</p>
+
+<ul>
+  <li>Public key fingerprint display for verified boot as a true security feature i.e. less truncation</li>
+  <li>Hardware-backed keys via a dedicated HSM</li>
+</ul>
+
+<h3 id="further-future-requirements">Further future requirements</h3>
+
+<ul>
+  <li>ECC memory</li>
+  <li>Superior rowhammer mitigations for memory than TRR</li>
+  <li>No closed-source drivers in userspace (binary drivers can be audited, but not easily hardened)</li>
+  <li>Far simpler boot chain without UEFI again (regressed in 2017)</li>
+  <li>Firmware information as part of the attestation capabilities</li>
+  <li>Improved security for pinning the attestation certificate chain (i.e. not only batches) to
+provide more assurance for the OS version and OS patch level reported by our Auditor app</li>
+  <li>Significantly more active use of existing anti-rollback features for firmware</li>
+  <li>Hardware switch for audio recording (microphone + motion sensors). A camera switch can be
+implemented via a case with sliding covers instead, which is arguably a better approach as it’s
+much easier to see the current state (harder to screw up) and it’s easier to audit.</li>
+  <li>Copperhead keys as an immutable root of trust (i.e. flashed into fuses) with Copperhead having
+control over the boot chain. Does not need to imply our involvement in making the hardware, as
+devices could be sold without the security fuses flashed yet.
+    <ul>
+      <li>Ideally, the hardware would also provide enough anti-rollback fuses for us to use fairly
+fine-grained rollback protection too, so we can use immutable rollback protection for OS
+versions.</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="support-status">Support status</h2>
+
+<p>Note that the end-of-life date is a minimum guarantee from the OEM and is subject to change.
+CopperheadOS can continue OS updates past end-of-life for a long time but full security updates
+require continued releases of the firmware for components like the baseband, WiFi, TrustZone, etc.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Device</th>
+      <th>Branch</th>
+      <th>End-of-life date</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Pixel 3a</td>
+      <td>10 (current)</td>
+      <td>May 2022</td>
+    </tr>
+    <tr>
+      <td>Pixel 3aXL</td>
+      <td>10 (current)</td>
+      <td>May 2022</td>
+    </tr>
+    <tr>
+      <td>Pixel 3</td>
+      <td>10 (current)</td>
+      <td>October 2021</td>
+    </tr>
+    <tr>
+      <td>Pixel 3XL</td>
+      <td>10 (current)</td>
+      <td>October 2021</td>
+    </tr>
+    <tr>
+      <td>Pixel 2XL</td>
+      <td>10 (current)</td>
+      <td>October 2020</td>
+    </tr>
+    <tr>
+      <td>Pixel 2</td>
+      <td>10 (current)</td>
+      <td>October 2020</td>
+    </tr>
+    <tr>
+      <td>Pixel XL</td>
+      <td>10 (EOL)</td>
+      <td>December 2019</td>
+    </tr>
+    <tr>
+      <td>Pixel</td>
+      <td>10 (EOL)</td>
+      <td>December 2019</td>
+    </tr>
+    <tr>
+      <td>Nexus 6P</td>
+      <td>Oreo M3 (EOL)</td>
+      <td>November 2018</td>
+    </tr>
+    <tr>
+      <td>Nexus 5X</td>
+      <td>Oreo M2 (EOL)</td>
+      <td>November 2018</td>
+    </tr>
+    <tr>
+      <td>Nexus 9</td>
+      <td>n/a</td>
+      <td>October 2017</td>
+    </tr>
+    <tr>
+      <td>Nexus 5</td>
+      <td>n/a</td>
+      <td>October 2016</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="driver-model">Driver model</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Device</th>
+      <th>Treble</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Pixel 3aXL</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td>Pixel 3a</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td>Pixel 3</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td>Pixel 3XL</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td>Pixel 2XL</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td>Pixel 2</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td>Pixel XL</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td>Pixel</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td>Nexus 6P</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>Nexus 5X</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>Nexus 9</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>Nexus 5</td>
+      <td>No</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>In addition to <a href="https://source.android.com/devices/architecture/treble">making future updates substantially
+easier</a> and improving testing /
+verification, Treble substantially improves security by <a href="https://android-developers.googleblog.com/2017/07/shut-hal-up.html">splitting up the HAL implementation into
+many isolated processes and reducing kernel attack
+surface</a>.</p>
+
+<h2 id="bootloader-firmware">Bootloader firmware</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Device</th>
+      <th>Verified boot</th>
+      <th>Rollback protection</th>
+      <th>Key enforcement</th>
+      <th>OS public key fingerprint display</th>
+      <th>A/B update support</th>
+      <th>Serial debugging while locked</th>
+      <th>OEM unlocking toggle</th>
+      <th>Anti-theft protection</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Pixel 2 XL</td>
+      <td>Full</td>
+      <td>Yes</td>
+      <td>Direct + via encryption</td>
+      <td>Strong implementation in progress</td>
+      <td>Yes</td>
+      <td>Restricted</td>
+      <td>Yes</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td>Pixel 2</td>
+      <td>Full</td>
+      <td>Yes</td>
+      <td>Direct + via encryption</td>
+      <td>Strong implementation in progress</td>
+      <td>Yes</td>
+      <td>Restricted</td>
+      <td>Yes</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td>Pixel XL</td>
+      <td>Full</td>
+      <td>No</td>
+      <td>Only via encryption</td>
+      <td>Strong implementation in progress</td>
+      <td>Yes</td>
+      <td>Restricted</td>
+      <td>Yes</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td>Pixel</td>
+      <td>Full</td>
+      <td>No</td>
+      <td>Only via encryption</td>
+      <td>Strong implementation in progress</td>
+      <td>Yes</td>
+      <td>Restricted</td>
+      <td>Yes</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td>Nexus 6P</td>
+      <td>Full</td>
+      <td>No</td>
+      <td>Only via encryption</td>
+      <td>Weak (64-bit via 16 hex characters)</td>
+      <td>No</td>
+      <td>Yes (despite toggle)</td>
+      <td>Yes</td>
+      <td>Without boot password</td>
+    </tr>
+    <tr>
+      <td>Nexus 5X</td>
+      <td>Full</td>
+      <td>No</td>
+      <td>Only via encryption</td>
+      <td>Weak (48-bit via 12 hex characters)</td>
+      <td>No</td>
+      <td>Yes</td>
+      <td>Yes</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>Nexus 9</td>
+      <td>Partial</td>
+      <td>No</td>
+      <td>n/a</td>
+      <td>n/a</td>
+      <td>No</td>
+      <td>Yes</td>
+      <td>Yes</td>
+      <td>Without boot password</td>
+    </tr>
+    <tr>
+      <td>Nexus 5</td>
+      <td>Partial</td>
+      <td>No</td>
+      <td>n/a</td>
+      <td>n/a</td>
+      <td>No</td>
+      <td>Yes</td>
+      <td>No</td>
+      <td>No</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>2nd generation Pixels introduce verified boot rollback protection (Android Verified Boot 2.0)
+rather than only enforcing it in the update client and recovery.</p>
+
+<p>A/B update support provides two sets of OS partitions (A and B slots) with support for safe atomic
+swaps between them. This requires a fair bit of firmware support and includes automatic rollbacks
+of updates after they’re installed if booting the OS fails multiple times. The freshly booted new
+OS version will verify the installation late in the booting process and will then mark the boot as
+successful, otherwise rollback will happen after multiple attempts without success.</p>
+
+<p>CopperheadOS has a modern update client for A/B update devices implementing fully automatic
+updates with automatic resume after failure at any point in the download, verification,
+installation and post-installation verification process. Previously, CopperheadOS used a fork of
+the CyanogenMod / LineageOS CMUpdater app which is still the update client on CopperheadOS Nexus
+devices and it isn’t very friendly or robust and it isn’t able to resume downloads or attempt to
+perform installation again without deleting the download or starting over, unlike the new update
+system.</p>
+
+<h2 id="wifi-driver--firmware">WiFi driver / firmware</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Device</th>
+      <th>Vendor</th>
+      <th>Robust scanning MAC randomization</th>
+      <th>Robust associated MAC randomization</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Pixel 2 XL</td>
+      <td>Qualcomm Atheros</td>
+      <td>Yes</td>
+      <td>Yes, but only at boot for now (CopperheadOS only)</td>
+    </tr>
+    <tr>
+      <td>Pixel 2</td>
+      <td>Qualcomm Atheros</td>
+      <td>Yes</td>
+      <td>Yes, but only at boot for now (CopperheadOS only)</td>
+    </tr>
+    <tr>
+      <td>Pixel XL</td>
+      <td>Qualcomm Atheros</td>
+      <td>Yes</td>
+      <td>Yes (CopperheadOS only)</td>
+    </tr>
+    <tr>
+      <td>Pixel</td>
+      <td>Qualcomm Atheros</td>
+      <td>Yes</td>
+      <td>Yes (CopperheadOS only)</td>
+    </tr>
+    <tr>
+      <td>Nexus 6P</td>
+      <td>Broadcom</td>
+      <td>Partial (only rotated random MAC)</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>Nexus 5X</td>
+      <td>Qualcomm Atheros</td>
+      <td>Yes</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>Nexus 9</td>
+      <td>Broadcom</td>
+      <td>Partial (only rotated random MAC)</td>
+      <td>Partial (CopperheadOS only)</td>
+    </tr>
+    <tr>
+      <td>Nexus 5</td>
+      <td>Broadcom</td>
+      <td>Partial (only rotated random MAC)</td>
+      <td>Partial (CopperheadOS only)</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>See the Android blog post on <a href="https://android-developers.googleblog.com/2017/04/changes-to-device-identifiers-in.html">Changes to Device Identifiers in Android
+O</a> for an
+overview. Qualcomm Atheros WiFi on Nexus / Pixel devices has enhanced drivers / firmware providing
+more robust MAC randomization than can be accomplished by CopperheadOS via the usual
+device-agnostic kernel and userspace MAC randomization support.</p>
+
+<p>Associated MAC randomization similarly requires cooperation from the firmware and drivers to avoid
+leaking other identifiers or the radio broadcasting before the MAC is randomized. On Pixel phones,
+CopperheadOS uses a custom implementation for Qualcomm Atheros after determining that there was no
+way to achieve the desired results via the standard MAC changing API.</p>
+
+<h2 id="trusted-execution-environment-tee-firmware">Trusted Execution Environment (TEE) firmware</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Device</th>
+      <th>Key / verified boot attestation</th>
+      <th>Disk encryption keys</th>
+      <th>Disk encryption key tied to verified boot key</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Pixel 2 XL</td>
+      <td>Yes</td>
+      <td>Encrypted by TEE</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td>Pixel 2</td>
+      <td>Yes</td>
+      <td>Encrypted by TEE</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td>Pixel XL</td>
+      <td>Partial</td>
+      <td>Encrypted by TEE</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td>Pixel</td>
+      <td>Partial</td>
+      <td>Encrypted by TEE</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td>Nexus 6P</td>
+      <td>No</td>
+      <td>Encrypted by OS with TEE</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td>Nexus 5X</td>
+      <td>No</td>
+      <td>Encrypted by OS with TEE</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td>Nexus 9</td>
+      <td>No</td>
+      <td>Encrypted by OS with TEE</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>Nexus 5</td>
+      <td>No</td>
+      <td>Encrypted by OS with TEE</td>
+      <td>No</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="weaver">Weaver</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Device</th>
+      <th>Hardware key escrow for authentication / encryption</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Pixel 2 XL</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td>Pixel 2</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td>Pixel XL</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>Pixel</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>Nexus 6P</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>Nexus 5X</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>Nexus 9</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>Nexus 5</td>
+      <td>No</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The Pixel 2 introduced a dedicated Hardware Security Module (HSM) with support for performing key
+escrow used to improve encryption key derivation. The OS needs to provide valid credential-derived
+tokens to get back randomly generated tokens stored in the HSM. These random tokens are an extra
+input for credential-derived key derivation. The HSM has a secure internal timer and enforces
+exponentially growing delays on authentication failures, which results in decryption having
+hardware-enforced throttling without actually needing to grant any trust to the HSM.</p>
+
+<h3 id="disk-encryption-keys">Disk encryption keys</h3>
+
+<p>Disk encryption keys are randomly generated and stored encrypted via key encryption keys derived
+from user credentials and other inputs. On older devices, the TEE was used as part of the process
+of deriving the key encryption key with scrypt in the OS. On newer devices, the OS uses scrypt to
+perform similar key derivation with scrypt and passes the output to the TEE. This puts the TEE in
+a better position as it can perform hardware-bound key derivation via features like using Qualcomm
+Crypto Engine HMAC support for hardware-bound HKDF. Details on the current implementation are not
+currently made available but it’s at least as good as the old implementation and the TEE is no
+longer crippled by a lackluster API at the boundary with the OS.</p>
+
+<h2 id="memory">Memory</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Device</th>
+      <th>Memory standard</th>
+      <th>TRR</th>
+      <th>ECC</th>
+      <th>Rowhammer susceptibility</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Pixel 2 XL</td>
+      <td>LPDDR4</td>
+      <td>Yes</td>
+      <td>No</td>
+      <td>Moderate (varies)</td>
+    </tr>
+    <tr>
+      <td>Pixel 2</td>
+      <td>LPDDR4</td>
+      <td>Yes</td>
+      <td>No</td>
+      <td>Moderate (varies)</td>
+    </tr>
+    <tr>
+      <td>Pixel XL</td>
+      <td>LPDDR4</td>
+      <td>Yes</td>
+      <td>No</td>
+      <td>Moderate (varies)</td>
+    </tr>
+    <tr>
+      <td>Pixel</td>
+      <td>LPDDR4</td>
+      <td>Yes</td>
+      <td>No</td>
+      <td>Moderate (varies)</td>
+    </tr>
+    <tr>
+      <td>Nexus 6P</td>
+      <td>LPDDR4</td>
+      <td>Yes</td>
+      <td>No</td>
+      <td>Moderate (varies)</td>
+    </tr>
+    <tr>
+      <td>Nexus 5X</td>
+      <td>LPDDR3</td>
+      <td>No</td>
+      <td>No</td>
+      <td>Very high (varies)</td>
+    </tr>
+    <tr>
+      <td>Nexus 9</td>
+      <td>LPDDR3</td>
+      <td>No</td>
+      <td>No</td>
+      <td>Very high (varies)</td>
+    </tr>
+    <tr>
+      <td>Nexus 5</td>
+      <td>LPDDR3</td>
+      <td>No</td>
+      <td>No</td>
+      <td>Very high (varies)</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="kernel-hardening">Kernel hardening</h2>
+
+<p>Features supported by every currently supported device like heap canaries are not listed. Unlike
+the tables above, this is software related so this table is specific to CopperheadOS and in theory
+these features could be backported further if we had more resources. However, the priority would
+be backporting more changes from mainline / linux-hardened to the latest devices.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Device</th>
+      <th>LTS Branch</th>
+      <th>PXN</th>
+      <th>PAN</th>
+      <th>HARDENED_USERCOPY</th>
+      <th>FORTIFY_SOURCE</th>
+      <th>RO protection</th>
+      <th>SSP</th>
+      <th>ASLR</th>
+      <th>Clang + -fsanitize=local-init</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Pixel 2 XL</td>
+      <td>4.4</td>
+      <td>Hardware</td>
+      <td>Software</td>
+      <td>Yes</td>
+      <td>Yes</td>
+      <td>Basic</td>
+      <td>Strong + zero byte</td>
+      <td>Hardened, 39-bit address space</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td>Pixel 2</td>
+      <td>4.4</td>
+      <td>Hardware</td>
+      <td>Software</td>
+      <td>Yes</td>
+      <td>Yes</td>
+      <td>Basic</td>
+      <td>Strong + zero byte</td>
+      <td>Hardened, 39-bit address space</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td>Pixel XL</td>
+      <td>3.18</td>
+      <td>Hardware</td>
+      <td>Software</td>
+      <td>Yes</td>
+      <td>Yes</td>
+      <td>Basic</td>
+      <td>Strong + zero byte</td>
+      <td>Hardened, 39-bit address space</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>Pixel</td>
+      <td>3.18</td>
+      <td>Hardware</td>
+      <td>Software</td>
+      <td>Yes</td>
+      <td>Yes</td>
+      <td>Basic</td>
+      <td>Strong + zero byte</td>
+      <td>Hardened, 39-bit address space</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>Nexus 6P</td>
+      <td>3.10</td>
+      <td>Hardware</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>Weak</td>
+      <td>Strong + zero byte</td>
+      <td>Basic, 39-bit address space</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>Nexus 5X</td>
+      <td>3.10</td>
+      <td>Hardware</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>Weak</td>
+      <td>Strong + zero byte</td>
+      <td>Basic, 39-bit address space</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>Nexus 9</td>
+      <td>3.10</td>
+      <td>Hardware</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>Terrible</td>
+      <td>Basic</td>
+      <td>Basic, 39-bit address space</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>Nexus 5</td>
+      <td>3.4</td>
+      <td>No</td>
+      <td>No</td>
+      <td>Yes</td>
+      <td>No</td>
+      <td>Terrible</td>
+      <td>Basic</td>
+      <td>Hardened, 32-bit address space</td>
+      <td>No</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="encryption">Encryption</h2>
+
+<p>See the <a href="https://source.android.com/security/encryption/">relevant Android documentation</a> for
+details. File-based encryption (FBE) has per-profile encryption keys and splits up storage into
+credential encrypted (default) and explicitly opt-in device encrypted storage available before the
+device is unlocked. For example, the modern CopperheadOS Updater app marks itself as Direct Boot
+aware and marks the update settings as device encrypted in order to perform updates before the
+device is unlocked. It enables fully automatic maintenance of an idle device. In the future, FBE
+will also enable authenticated encryption and storage classes for protecting data while locked by
+dropping a set of keys derived from the user credentials from memory when it locks. Devices are
+almost always turned on and keys can be physically extracted from a device that’s turned on so FBE
+is crucial for improving disk encryption to meet real world needs. It’s possible to protect data
+while locked today, but app developers are too lazy to do it via the keystore and need an easy
+mechanism via a new FBE storage class.</p>
+
+<p>The drawback of FBE is that it can leak more metadata when comparing devices that are turned off.
+For example, even though file names are encrypted some information can be gained based on their
+size. CopperheadOS increases the padding of file names from the default 4 bytes to 32 bytes. The
+protection of other metadata will improve over time as part of Linux ext4 development. Device
+encrypted data is very explicitly opt-in and few apps take advantage of it so that isn’t a serious
+concern for apps, but it is one for the base system since it uses it a fair bit to implement a
+fully functional OS in early boot. Our view is that these issues are not major ones and can be
+worked through. The advantages of FBE will far outweigh the disadvantages in the future. It would
+be possible to layer FBE on top of FDE but there would need to be a boot password again for it to
+accomplish much and that would lose the usability advantages of Direct Boot along with truly fully
+automatic update support. It’s something we can consider for the future, but mitigating the side
+channel metadata leakage for devices that are turned off is far less important to us than
+advancing protection of data while the screen is locked by moving as much as possible to a new
+storage class.</p>
+
+<p>File-based encryption requires firmware support to be fully implemented. There was an experimental
+version ported by Google to the Nexus 5X and 6P but it shouldn’t be used beyond testing and cannot
+be considered robust or secure. It isn’t quite the same as the real thing and the legacy update
+client on CopperheadOS Nexus devices cannot perform updates if it’s enabled.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Device</th>
+      <th>Mode</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Pixel 2 XL</td>
+      <td>FBE</td>
+    </tr>
+    <tr>
+      <td>Pixel 2</td>
+      <td>FBE</td>
+    </tr>
+    <tr>
+      <td>Pixel XL</td>
+      <td>FBE</td>
+    </tr>
+    <tr>
+      <td>Pixel</td>
+      <td>FBE</td>
+    </tr>
+    <tr>
+      <td>Nexus 6P</td>
+      <td>FDE</td>
+    </tr>
+    <tr>
+      <td>Nexus 5X</td>
+      <td>FDE</td>
+    </tr>
+    <tr>
+      <td>Nexus 9</td>
+      <td>FDE</td>
+    </tr>
+    <tr>
+      <td>Nexus 5</td>
+      <td>FDE</td>
+    </tr>
+  </tbody>
+</table>
+
+        </div>
+      </section>
+    </div>
+
+
+  </body>
+
+  <footer>
+    <style>
+      .footer
+      {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        background-color: #000000;
+        color: white;
+        text-align: center;
+      }
+    </style>
+
+    <div class="footer">
+      <a href="https://copperhead.co/" class="btn">Copperhead Home</a></li>
+      <a href="https://copperhead.co/android" class="btn">Android</a></li>
+      <a href="mailto:info@copperhead.co" class="btn">Contact</a></li>
+      <a href="https://twitter.com/CopperheadSec" class="btn">Twitter</a></li>
+    </div>
+  </footer>
+
+</html>

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/css/style.css?v=3b961330d90c3bca66ff650f33c2e11db3e49cc1">
+
+<!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Installation | CopperheadOS Documentation Repository</title>
+<meta name="generator" content="Jekyll v3.8.5" />
+<meta property="og:title" content="Installation" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Instructions on installing and updating CopperheadOS" />
+<meta property="og:description" content="Instructions on installing and updating CopperheadOS" />
+<link rel="canonical" href="http://localhost:4000/install.html" />
+<meta property="og:url" content="http://localhost:4000/install.html" />
+<meta property="og:site_name" content="CopperheadOS Documentation Repository" />
+<script type="application/ld+json">
+{"description":"Instructions on installing and updating CopperheadOS","@type":"WebPage","url":"http://localhost:4000/install.html","headline":"Installation","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+  </head>
+
+  <body>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <header>
+      <div class="container">
+        <div class="clearfix">
+          <p>
+            <a href="https://copperhead.co/android">
+              <img src="/assets/images/logo_circle_white_small.png">
+            </a>
+            <h1>CopperheadOS Documentation Repository</h1>
+          </p>
+        </div>
+        <div id='subpage-navbar' class='container'>
+            <div class='row'>
+                <main class='subpage'>
+                    <ol class='docs-toc'>
+                        <ul>
+                          <li><a href="/">Home</a></li>
+                          <li><a href="/updates">Updates</a></li>
+                          <li><a href="/usage_guide">Usage Guide</a></li>
+                          <li><a href="/technical_overview">Overview</a></li>
+                          <li><a href="/verified_boot">Verified Boot</a></li>
+                          <li><a href="/building">Build</a></li>
+                          <li><a href="/install">Install</a></li>
+                          <li><a href="/devices">Devices</a></li>
+                          <li><a href="/licensing">Licensing</a></li>
+                        </ul>
+                    </ol>
+                </main>
+            </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <p><em>Proceed with caution: This documentation is being worked on and out of date.</em></p>
+
+<h1 class="no_toc" id="installing-copperheados">Installing CopperheadOS</h1>
+
+<ul id="markdown-toc">
+  <li><a href="#supported-devices" id="markdown-toc-supported-devices">Supported devices</a></li>
+  <li><a href="#prerequisites" id="markdown-toc-prerequisites">Prerequisites</a></li>
+  <li><a href="#enabling-oem-unlocking" id="markdown-toc-enabling-oem-unlocking">Enabling OEM unlocking</a></li>
+  <li><a href="#updating-stock-before-using-fastboot" id="markdown-toc-updating-stock-before-using-fastboot">Updating stock before using fastboot</a></li>
+  <li><a href="#obtaining-factory-images" id="markdown-toc-obtaining-factory-images">Obtaining factory images</a></li>
+  <li><a href="#flashing-factory-images" id="markdown-toc-flashing-factory-images">Flashing factory images</a></li>
+  <li><a href="#setting-custom-avb-key" id="markdown-toc-setting-custom-avb-key">Setting custom AVB key</a></li>
+  <li><a href="#locking-the-bootloader" id="markdown-toc-locking-the-bootloader">Locking the bootloader</a></li>
+  <li><a href="#updating" id="markdown-toc-updating">Updating</a>    <ul>
+      <li><a href="#update-client" id="markdown-toc-update-client">Update client</a></li>
+      <li><a href="#sideloading" id="markdown-toc-sideloading">Sideloading</a></li>
+    </ul>
+  </li>
+  <li><a href="#reporting-bugs" id="markdown-toc-reporting-bugs">Reporting bugs</a></li>
+  <li><a href="#clearing-custom-avb-key" id="markdown-toc-clearing-custom-avb-key">Clearing custom AVB key</a></li>
+</ul>
+
+<h2 id="supported-devices">Supported devices</h2>
+
+<p>CopperheadOS currently has official support for the following devices:</p>
+
+<ul>
+  <li>HiKey (hikey)</li>
+  <li>HiKey 960 (hikey960)</li>
+  <li>Nexus 5X (bullhead)</li>
+  <li>Nexus 6P (angler)</li>
+  <li>Pixel (sailfish)</li>
+  <li>Pixel XL (marlin)</li>
+  <li>Pixel 2 (walleye)</li>
+  <li>Pixel 2 XL (taimen)</li>
+</ul>
+
+<p>It can be ported to other Android devices with Treble support via the standard <a href="/building#device-porting-process">device porting process</a>. Most devices lack support for the
+<a href="/devices#minimum-requirements-for-copperheados-support">security requirements</a>
+needed to match how it works on the officially supported devices.</p>
+
+<p>For Pixel phones, users not buying a device from Copperhead with the official build need to <a href="/building">make a build signed with their own keys</a> before flashing it to the device with
+these instructions. Future releases can be similarly built from source and sideloaded as updates
+via the instructions here. The full sources are published so unofficial builds will match official
+builds if done correctly per the instructions.</p>
+
+<p>HiKey and HiKey 960 installation instructions are not covered here.</p>
+
+<h2 id="prerequisites">Prerequisites</h2>
+
+<p>You should have at least 4GB of memory to avoid problems.</p>
+
+<p>You can obtain the adb and fastboot tools from the Android SDK. Either install Android Studio or
+use the standalone SDK. Do not use distribution packages for adb and fastboot. Distribution
+packages are out-of-date and not compatible with the latest version of Android. An obsolete
+fastboot will result in corrupted installations and potentially bricked devices. Do not make the
+common mistake of assuming that everything will be fine and ignoring these instructions. Double
+check that the first fastboot in your PATH is indeed from an up-to-date SDK installation:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>which fastboot
+</code></pre></div></div>
+
+<p>To set up a minimal SDK installation without Android Studio on Linux:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mkdir ~/sdk
+cd ~/sdk
+wget https://dl.google.com/android/repository/sdk-tools-linux-3859397.zip
+unzip sdk-tools-linux-3859397.zip
+</code></pre></div></div>
+
+<p>Run an initial update, which will also install platform-tools and patcher;v4:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tools/bin/sdkmanager --update
+</code></pre></div></div>
+
+<p>For running the Compatibility Test Suite you’ll also need the build-tools for aapt:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tools/bin/sdkmanager 'build-tools;25.0.3'
+</code></pre></div></div>
+
+<p>To make your life easier, add the directories to your PATH in your shell profile configuration:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export PATH="$HOME/sdk/tools:$HOME/sdk/tools/bin:$HOME/sdk/platform-tools:$HOME/sdk/build-tools/25.0.3:$PATH"
+export ANDROID_HOME="$HOME/sdk"
+</code></pre></div></div>
+
+<p>This is not mandatory, since you can run them from ~/sdk/platform-tools directly.</p>
+
+<p>You should update the sdk before use from this point onwards:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sdkmanager --update
+</code></pre></div></div>
+
+<h2 id="enabling-oem-unlocking">Enabling OEM unlocking</h2>
+
+<p>OEM unlocking needs to be enabled from within the operating system.</p>
+
+<p>Enable the developer settings menu by going to Settings -&gt; About device and pressing on the build
+number menu entry until developer mode is enabled.</p>
+
+<p>Next, go to Settings -&gt; Developer settings and toggle on the ‘Enable OEM unlocking’ setting.</p>
+
+<h2 id="updating-stock-before-using-fastboot">Updating stock before using fastboot</h2>
+
+<p>It’s important to have the latest bootloader firmware before installing CopperheadOS, due to bug
+fixes for the fastboot mode used to flash CopperheadOS. There are known issues with older versions
+of the bootloader that are likely to cause problems.</p>
+
+<p>If you’re only behind one release, updating within the stock OS makes sense to get an incremental
+update. If you’re behind multiple releases, updating within the OS will usually require installing
+multiple updates to catch up to the current state of things. The quickest way to deal with that if
+you have plenty of bandwidth is <a href="https://developers.google.com/android/ota">sideloading the latest full over-the-air update from
+Google</a>.</p>
+
+<h2 id="obtaining-factory-images">Obtaining factory images</h2>
+
+<p>The initial install should be performed by flashing the factory images. This will replace the
+existing OS installation and wipe all the existing data.</p>
+
+<p>For Nexus phones, the official factory images tarball can be downloaded from the <a href="/android/releases">releases page</a>. Verify the official factory images using the GPG signature:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gpg --recv-keys 65EEFE022108E2B708CBFCF7F9E712E59AF5F22A
+gpg --verify taimen-factory-2018.03.01.14.tar.xz.sig taimen-factory-2018.03.01.14.tar.xz
+</code></pre></div></div>
+
+<h2 id="flashing-factory-images">Flashing factory images</h2>
+
+<p>First, boot into the bootloader interface. You can do this by turning off the device and then
+turning it on by holding both the Volume Down and Power buttons. Alternatively, you can use <code class="language-plaintext highlighter-rouge">adb
+reboot bootloader</code> from Android.</p>
+
+<p>The bootloader now needs to be unlocked to allow flashing new images:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fastboot flashing unlock
+</code></pre></div></div>
+
+<p>On the Pixel 2 <strong>XL</strong> (not the Pixel 2 or other devices), it’s currently necessary to unlock the
+critical partitions, but a future update will make the bootloader consistent with other devices:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fastboot flashing unlock_critical
+</code></pre></div></div>
+
+<p>The command needs to be confirmed on the device.</p>
+
+<p>Next, extract the factory images and run the script to flash them. Note that the <code class="language-plaintext highlighter-rouge">fastboot</code>
+command run by the flashing script requires a fair bit of free space in a temporary directory,
+which defaults to <code class="language-plaintext highlighter-rouge">/tmp</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tar xvf taimen-factory-2018.03.01.14.tar.xz
+cd taimen-opm1.171019.018
+./flash-all.sh
+</code></pre></div></div>
+
+<p>Use a different temporary directory if your <code class="language-plaintext highlighter-rouge">/tmp</code> doesn’t have 2GiB available:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mkdir tmp
+TMPDIR=$PWD/tmp ./flash-all.sh
+</code></pre></div></div>
+
+<p>You should now proceed to locking the bootloader before using the device as locking wipes the data
+again.</p>
+
+<h2 id="setting-custom-avb-key">Setting custom AVB key</h2>
+
+<p>On the Pixel 2 and Pixel 2 XL, the public key needs to be set for Android Verified Boot 2.0 before
+locking the bootloader again:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fastboot flash avb_custom_key taimen-avb_pkmd.bin
+</code></pre></div></div>
+
+<p>To confirm that the key is set, verify that <code class="language-plaintext highlighter-rouge">avb_user_settable_key_set</code> is <code class="language-plaintext highlighter-rouge">yes</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fastboot getvar avb_user_settable_key_set
+</code></pre></div></div>
+
+<h2 id="locking-the-bootloader">Locking the bootloader</h2>
+
+<p>Locking the bootloader is important as it enables full verified boot. It also prevents using
+fastboot to flash, format or erase partitions.  Verified boot will detect modifications to any of
+the OS partitions (boot, recovery, system, vendor) and it will prevent reading any modified /
+corrupted data. If changes are detected, error correction data is used to attempt to obtain the
+original data at which point it’s verified again which makes verified boot robust to non-malicious
+corruption.</p>
+
+<p>On the Pixel 2 <strong>XL</strong> (not the Pixel 2 or other devices), lock the critical partitions again if
+this was unlocked:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fastboot flashing lock_critical
+</code></pre></div></div>
+
+<p>Reboot into the bootloader menu and set it to locked:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fastboot flashing lock
+</code></pre></div></div>
+
+<p>The command needs to be confirmed on the device since it needs to perform a factory reset.</p>
+
+<p>Unlocking the bootloader again will perform a factory reset.</p>
+
+<p>OEM unlocking should be disabled again in the developer settings menu within the operating system.
+This prevents unlocking the bootloader without access to the owner account. CopperheadOS prevents
+bypassing the OEM unlocking toggle by wiping the data partition from the hidden recovery menu,
+unlike stock Android.  You can still trigger factory resets from within the OS. Note that this
+means that recovering a device with a forgotten password is not possible without Copperhead doing
+it, which is the main purpose of this feature (anti-theft).  Stock Android can be more forgiving
+because it’s tied to a Google account.</p>
+
+<h2 id="updating">Updating</h2>
+
+<h3 id="update-client">Update client</h3>
+
+<p>See <a href="/usage_guide#updates-on-pixel-phones">the section in the usage guide</a>.</p>
+
+<h3 id="sideloading">Sideloading</h3>
+
+<p>Updates can also be downloaded from <a href="/android/releases">the releases page</a> and installed via
+recovery with adb sideloading. The zip files are signed and will be verified by the CopperheadOS
+recovery image.</p>
+
+<p>First, boot into recovery. You can do this either by using <code class="language-plaintext highlighter-rouge">adb reboot recovery</code> from the
+operating system or selecting the Recovery option in the bootloader menu.</p>
+
+<p>You should see an Android lying on their back being repaired, with the text “No command” meaning
+that no command has been passed to recovery.</p>
+
+<p>Next, access the recovery menu by holding down the power button and pressing the volume up button
+a single time. This key combination toggles between the GUI and text-based mode with the menu and
+log output.</p>
+
+<p>Finally, select the “Apply update from ADB” option in the recovery menu and sideload the update
+with adb:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>adb sideload taimen-ota_update-2018.03.01.14.zip
+</code></pre></div></div>
+
+<h2 id="reporting-bugs">Reporting bugs</h2>
+
+<p>Bugs (or feature requests) should be reported to <a href="https://github.com/copperhead/bugtracker/issues">the issue tracker on
+GitHub</a>.</p>
+
+<h2 id="clearing-custom-avb-key">Clearing custom AVB key</h2>
+
+<p>On the Pixel 2 and Pixel 2 XL, reverting back to stock requires clearing the configured public
+key after unlocking the bootloader and before locking it again with the stock factory images:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fastboot erase avb_custom_key
+</code></pre></div></div>
+
+<p>To confirm that the key is unset, verify that <code class="language-plaintext highlighter-rouge">avb_user_settable_key_set</code> is <code class="language-plaintext highlighter-rouge">no</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fastboot getvar avb_user_settable_key_set
+</code></pre></div></div>
+
+      </section>
+    </div>
+
+    
+  </body>
+  <footer>
+    <style>
+      .footer
+      {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        background-color: #000000;
+        color: white;
+        text-align: center;
+      }
+    </style>
+
+    <div class="footer">
+      <a href="https://copperhead.co/" class="btn">Copperhead Home</a></li>
+      <a href="https://copperhead.co/android" class="btn">Android</a></li>
+      <a href="mailto:info@copperhead.co" class="btn">Contact</a></li>
+      <a href="https://twitter.com/CopperheadSec" class="btn">Twitter</a></li>
+    </div>
+  </footer>
+</html>

@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/css/style.css?v=3b961330d90c3bca66ff650f33c2e11db3e49cc1">
+
+<!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Technical Overview | CopperheadOS Documentation Repository</title>
+<meta name="generator" content="Jekyll v3.8.5" />
+<meta property="og:title" content="Technical Overview" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Technical overview of the currently implemented features in CopperheadOS" />
+<meta property="og:description" content="Technical overview of the currently implemented features in CopperheadOS" />
+<link rel="canonical" href="http://localhost:4000/technical_overview.html" />
+<meta property="og:url" content="http://localhost:4000/technical_overview.html" />
+<meta property="og:site_name" content="CopperheadOS Documentation Repository" />
+<script type="application/ld+json">
+{"description":"Technical overview of the currently implemented features in CopperheadOS","@type":"WebPage","url":"http://localhost:4000/technical_overview.html","headline":"Technical Overview","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+  </head>
+
+  <body>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <header>
+      <div class="container">
+        <div class="clearfix">
+          <p>
+            <a href="https://copperhead.co/android">
+              <img src="/assets/images/logo_circle_white_small.png">
+            </a>
+            <h1>CopperheadOS Documentation Repository</h1>
+          </p>
+        </div>
+        <div id='subpage-navbar' class='container'>
+            <div class='row'>
+                <main class='subpage'>
+                    <ol class='docs-toc'>
+                        <ul>
+                          <li><a href="/">Home</a></li>
+                          <li><a href="/updates">Updates</a></li>
+                          <li><a href="/usage_guide">Usage Guide</a></li>
+                          <li><a href="/technical_overview">Overview</a></li>
+                          <li><a href="/verified_boot">Verified Boot</a></li>
+                          <li><a href="/building">Build</a></li>
+                          <li><a href="/install">Install</a></li>
+                          <li><a href="/devices">Devices</a></li>
+                          <li><a href="/licensing">Licensing</a></li>
+                        </ul>
+                    </ol>
+                </main>
+            </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <h1 class="no_toc" id="technical-overview-of-copperheados">Technical overview of CopperheadOS</h1>
+
+<p>This is a technical overview of the currently implemented features in CopperheadOS. For a list of
+planned features, see <a href="https://github.com/copperhead/bugtracker/labels/enhancement">the issues tagged as enhancements on the
+tracker</a>. The scope will be expanded
+as more features are implemented.</p>
+
+<p>CopperheadOS is based on the latest stable release of the Android Open Source Project and has the
+baseline privacy and security features from there, which are already far ahead of any traditional
+desktop / mobile Linux distribution. Unlike other variants of Android including aftermarket OSes
+and the forks vendors make for their devices, CopperheadOS doesn’t disable or weaken the baseline
+security features like verified boot and the SELinux policy. This document doesn’t attempt to
+cover the Android baseline beyond a brief introduction at the start.</p>
+
+<p>This overview covers the latest generation devices (Pixel 2 , Pixel 2 XL). Past generation devices
+have no remote attestation, weaker verified boot without rollback protection, a different
+implementation of encryption, a different update system and only a subset of the kernel hardening
+is present.</p>
+
+<p>The <a href="/usage_guide">usage guide</a> covers the user experience of
+the small subset of user-facing features in more depth.</p>
+
+<ul id="markdown-toc">
+  <li><a href="#prelude-android-baseline" id="markdown-toc-prelude-android-baseline">Prelude: Android baseline</a></li>
+  <li><a href="#exec-based-spawning-model" id="markdown-toc-exec-based-spawning-model">Exec-based spawning model</a></li>
+  <li><a href="#chromium--webview" id="markdown-toc-chromium--webview">Chromium / WebView</a></li>
+  <li><a href="#bionic-libc-improvements" id="markdown-toc-bionic-libc-improvements">Bionic libc improvements</a>    <ul>
+      <li><a href="#hardened-allocator" id="markdown-toc-hardened-allocator">Hardened allocator</a>        <ul>
+          <li><a href="#regions" id="markdown-toc-regions">Regions</a></li>
+          <li><a href="#small-allocations" id="markdown-toc-small-allocations">Small allocations</a></li>
+          <li><a href="#large-allocations" id="markdown-toc-large-allocations">Large allocations</a></li>
+        </ul>
+      </li>
+      <li><a href="#extended-_fortify_source-implementation" id="markdown-toc-extended-_fortify_source-implementation">Extended <code class="language-plaintext highlighter-rouge">_FORTIFY_SOURCE</code> implementation</a></li>
+      <li><a href="#dynamic-object-size-queries" id="markdown-toc-dynamic-object-size-queries">Dynamic object size queries</a></li>
+      <li><a href="#function-pointer-protection" id="markdown-toc-function-pointer-protection">Function pointer protection</a></li>
+      <li><a href="#miscellaneous-improvements" id="markdown-toc-miscellaneous-improvements">Miscellaneous improvements</a></li>
+    </ul>
+  </li>
+  <li><a href="#android-runtime" id="markdown-toc-android-runtime">Android Runtime</a></li>
+  <li><a href="#compiler-hardening" id="markdown-toc-compiler-hardening">Compiler hardening</a></li>
+  <li><a href="#enhanced-selinux-policies" id="markdown-toc-enhanced-selinux-policies">Enhanced SELinux policies</a></li>
+  <li><a href="#encryption-and-authentication" id="markdown-toc-encryption-and-authentication">Encryption and authentication</a>    <ul>
+      <li><a href="#support-for-longer-passwords" id="markdown-toc-support-for-longer-passwords">Support for longer passwords</a></li>
+      <li><a href="#reduced-side-channel-leakage-for-file-based-encryption" id="markdown-toc-reduced-side-channel-leakage-for-file-based-encryption">Reduced side channel leakage for file-based encryption</a></li>
+      <li><a href="#pin-entry-scrambling" id="markdown-toc-pin-entry-scrambling">PIN entry scrambling</a></li>
+      <li><a href="#fingerprint-unlock" id="markdown-toc-fingerprint-unlock">Fingerprint unlock</a></li>
+    </ul>
+  </li>
+  <li><a href="#privacy-focused-defaults" id="markdown-toc-privacy-focused-defaults">Privacy-focused defaults</a></li>
+  <li><a href="#over-the-air-updates" id="markdown-toc-over-the-air-updates">Over-the-air updates</a></li>
+  <li><a href="#networking" id="markdown-toc-networking">Networking</a></li>
+  <li><a href="#permissions" id="markdown-toc-permissions">Permissions</a></li>
+  <li><a href="#attack-surface-reduction" id="markdown-toc-attack-surface-reduction">Attack surface reduction</a>    <ul>
+      <li><a href="#recovery" id="markdown-toc-recovery">Recovery</a></li>
+    </ul>
+  </li>
+  <li><a href="#security-focused-apps" id="markdown-toc-security-focused-apps">Security-focused apps</a>    <ul>
+      <li><a href="#chromium" id="markdown-toc-chromium">Chromium</a></li>
+      <li><a href="#silence" id="markdown-toc-silence">Silence</a></li>
+      <li><a href="#pdf-viewer" id="markdown-toc-pdf-viewer">PDF Viewer</a></li>
+    </ul>
+  </li>
+  <li><a href="#kernel-hardening" id="markdown-toc-kernel-hardening">Kernel hardening</a></li>
+  <li><a href="#miscellaneous-features" id="markdown-toc-miscellaneous-features">Miscellaneous features</a></li>
+  <li><a href="#past-features" id="markdown-toc-past-features">Past features</a>    <ul>
+      <li><a href="#security-level-and-advanced-configuration" id="markdown-toc-security-level-and-advanced-configuration">Security level and advanced configuration</a></li>
+      <li><a href="#encryption-and-authentication-1" id="markdown-toc-encryption-and-authentication-1">Encryption and authentication</a>        <ul>
+          <li><a href="#support-for-a-separate-encryption-password" id="markdown-toc-support-for-a-separate-encryption-password">Support for a separate encryption password</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="prelude-android-baseline">Prelude: Android baseline</h2>
+
+<p>The Android Open Source Project provides a robust base to build upon. The baseline security model
+and features are not documented here, only the CopperheadOS improvements. To summarize some of the
+standard security features inherited from Android:</p>
+
+<ul>
+  <li>Full Disk Encryption at the filesystem layer is always enabled, covering all data (AES-256-XTS)
+and metadata (AES-256-CBC+CTS). Encryption keys are randomly generated, and then encrypted
+with a key encryption key derived via scrypt from the passphrase the verified boot key and the
+hardware-bound Trusted Execution Environment key which also implements rate limiting below the OS
+layer.</li>
+  <li>Separate disk encryption keys for each user profile based on the credentials. User profiles are
+very useful even on single-user devices as isolated workspaces. A profile can also be dedicated
+to usage in situations where there would be a risk of the password (recording entry) or encryption
+key (dumping data from the hardware after unlock) important profile being compromised if it was
+entered.</li>
+  <li>Full verified boot, covering all firmware and OS partitions. The unverified userdata partition
+is encrypted and wiped by a factory reset. Rollback protection is implemented via the Replay
+Protected Memory Block along with direct enforcement of the CopperheadOS public keys. Very basic
+remote attestation of verified boot results including the public key fingerprint is supported
+via keys provisioned by the device vendor accessible to the Trusted Execution Environment for
+signing. See the <a href="/verified_boot">documentation on verified boot</a> for more details.</li>
+  <li>Baseline app isolation via unique uid/gid pairs for each app.</li>
+  <li>App permission model including the ability to revoke permissions and supply fake data. Most
+permissions are based on dynamic checks for IPC requests, while a small subset make use of
+secondary groups.</li>
+  <li>Full system SELinux policy with fine-grained domains. There is no unconfined domain, and MLS
+provides very strong multi-user isolation.</li>
+  <li>Fine-grained ioctl command filtering is done via SELinux. This is better than using seccomp-bpf
+to filter ioctl parameters since it’s per-device-type and lower overhead.  This is being
+expanded to cover all usage of ioctls including device-specific whitelists for graphics
+drivers, etc.</li>
+  <li>Kernel attack surface reduction via seccomp-bpf. There are strong sandboxes for the media
+codec endocing / decoding and extractor services, along with the Chromium browser and WebView
+used to render web content in other apps. A much more basic seccomp policy is applied to the
+entire app layer, disallowing system calls not explicitly exposed as a public API via Bionic
+libc.</li>
+  <li>Widespread adoption of memory-safe languages, including within the base OS.</li>
+  <li>Higher-entropy ASLR than the upstream Linux kernel defaults paired with library load order
+randomization in the linker.</li>
+  <li>SSP, full RELRO and PIE and _FORTIFY_SOURCE=2 are enabled by default. _FORTIFY_SOURCE=2
+checks for read overflows rather than only write overflows like glibc. The dynamic linker only
+supports position independent executables. Text relocations are not supported on 64-bit or modern
+app API levels or the base OS for 32-bit and neither are RWX sections in libraries.</li>
+  <li>etc.</li>
+</ul>
+
+<h2 id="exec-based-spawning-model">Exec-based spawning model</h2>
+
+<p>CopperheadOS spawns applications from the Zygote service in the traditional Unix way with <code class="language-plaintext highlighter-rouge">fork</code>
+and <code class="language-plaintext highlighter-rouge">exec</code> rather than Android’s standard model using only <code class="language-plaintext highlighter-rouge">fork</code>. This results in the address
+space layout and stack/setjmp canaries being randomized for each spawned application rather than
+having the same layout and canary values reused for all applications until reboot. In addition to
+hardening applications from exploitation, this also hardens the base system as the large, near
+root equivalent system_server service is spawned from the Zygote.</p>
+
+<p>Supporting exec-based spawning requires reimplementing the same infrastructure, debugging hooks,
+etc. that are provided by the standard spawning model.</p>
+
+<p>Support for shared RELRO sections has been removed, since it’s unusable with exec-based spawning
+and results in a reduction of complexity and SELinux permissions. Similarly, the AtlasAsset
+service has been removed since it wouldn’t be possible for it to work as currently designed. There
+are various other disabled optimizations along with some emulation of the standard spawning model
+by doing a tiny subset of the preloading that’s usually done in the Zygote when apps are spawned.</p>
+
+<h2 id="chromium--webview">Chromium / WebView</h2>
+
+<p>CopperheadOS ships a custom build of Android’s WebView along with a standalone build of Chromium
+from the same source tree. Unlike Google’s Chrome app, the CopperheadOS Chromium app is 64-bit.</p>
+
+<p>Chromium supports per-site-instance sandboxing via isolatedProcess and seccomp-bpf. The WebView
+has early support for sandboxing via a single isolatedProcess renderer for each app using it. It
+isn’t yet enabled in stock Android, but CopperheadOS force enables it. The sandboxed processes
+aren’t tied to the architecture of the app, so on CopperheadOS they are set to always run as
+64-bit unlike vanilla Chromium where they will always be 32-bit. Once enabling multiple renderer
+processes is stable, CopperheadOS will enable more of them since the memory cost is acceptable for
+the niche. It currently results in stability issues due to apparent race conditions.</p>
+
+<p>CopperheadOS also builds Chromium with -fstack-protector-strong rather than -fstack-protector and
+removes mremap from the system call whitelist since CopperheadOS is currently not using it as an
+optimization in the system allocator and it’s not used elsewhere. It also <em>temporarily</em> makes use
+of -fwrapv to prevent optimizations from introducing security issues due to reliance on undefined
+signed overflow. However, this will be replaced by automatic integer overflow checking via usage
+of -fsanitize=shift,signed-integer-overflow -fsanitize-trap=shift,signed-integer-overflow once
+Chromium makes further progress towards eliminating bugs caught by UBSan.</p>
+
+<p>Using Chromium or a WebView-based browser has the advantage of reducing attack surface compared to
+another browser engine, since the Chromium-based WebView is already a baseline Android component.
+The standalone Chromium also has a far superior sandbox to the one available for the WebView at
+the moment, although it will continue to catch up.</p>
+
+<p>Chromium’s default settings have been adjusted to be more suited to CopperheadOS. Navigation error
+correction, contextual search, network prediction, metrics and hyperlink auditing are disabled by
+default. The welcome page with the opt-out for metrics is omitted since it’s already disabled, as
+are the 3 forms of promotion of Google’s data reduction proxy. The form autofill feature is also
+disabled by default until it has a saner implementation less vulnerable to phishing.</p>
+
+<p>Note that while no features have been removed, Chromium for Android depends on Play Services for
+Google account integration and some other features based on Google services so those features are
+not available on CopperheadOS.</p>
+
+<p>DuckDuckGo has been added as a search engine option and is set as the default. It supports the
+search suggestion API used by Chromium. A missing feature is search-by-image, which is available
+with Bing or Google set as the search engine.</p>
+
+<p>CopperheadOS also disables the Location permission group for the browser by default since Chromium
+knows how to request it when needed and many users don’t use it. Separately from that, the default
+browser search engine is also not granted internal browser geolocation permissions by default and
+it needs to be explicitly enabled just as it needs to be for a regular site.</p>
+
+<h2 id="bionic-libc-improvements">Bionic libc improvements</h2>
+
+<h3 id="hardened-allocator">Hardened allocator</h3>
+
+<p>CopperheadOS replaces the system allocator with a port of OpenBSD’s malloc implementation. Various
+enhancements have been made to the standard OpenBSD allocator, some of which have been upstreamed.</p>
+
+<p>The allocator doesn’t use any inline metadata, so traditional allocator exploitation techniques
+are not possible. Hash tables track page spans for each parallel allocation pool and point to
+bitmaps tracking slot metadata within pages for small allocations. The out-of-line metadata
+results in full detection of invalid free calls. It is guaranteed to abort for pointers that are
+not active malloc allocations.</p>
+
+<p>The configuration is made read-only at runtime and the rest of the global state is protected to
+some extent via randomization and canaries. CopperheadOS has some small extensions to improve the
+randomization and may do more in the future.</p>
+
+<p>In order to mitigate vulnerabilities caused by offsets from unchecked malloc calls, CopperheadOS
+sets the allocator to abort on out-of-memory by default. It can be turned off on a case by case
+basis in processes verified to check for out-of-memory for all allocator calls. Android uses full
+overcommit paired with a userspace out-of-memory killer, so the abort only occurs when a process
+exhausts the virtual address space. In practice, it’s not possible for an attacker to trigger
+virtual memory exhaustion without also being able to trigger the out-of-memory killer, and this
+mitigates many severe vulnerabilities. The address space is very large on all of the first-tier
+CopperheadOS devices (47-bit) so it can only really be exhausted if there’s a severe logic error
+or an attacker has control of the allocated size.</p>
+
+<h4 id="regions">Regions</h4>
+
+<p>OpenBSD malloc is a zone-based allocator, similar in design to Android’s standard jemalloc
+allocator. Unlike jemalloc, it uses page-aligned regions instead of 2MiB aligned regions so it
+doesn’t cause a loss of mmap randomization entropy. The standard allocator loses 9 bits of mmap
+entropy on systems with 4096 byte pages.</p>
+
+<p>A randomized page cache provides a layer on top of mmap and munmap. Spans of pages are cached in
+an array with up to 256 slots using randomized searches. Regions are split at this layer but not
+merged together. It’s meant to provide a thin layer over mmap, partly to benefit from fine-grained
+randomization by the kernel. Linux only randomizes the mmap base, unlike OpenBSD, so for now it’s
+not on par with how it works there.</p>
+
+<p>A user-facing setting is exposed for enabling page cache memory protection to trigger aborts for
+use-after-free bugs. For small allocations, a whole page needs to be cleared out for this to work,
+but another technique is used to provide a comparable mitigation (see below).</p>
+
+<h4 id="small-allocations">Small allocations</h4>
+
+<p>Fine-grained randomization is performed for small allocations by choosing a random pool to satisfy
+requests and then choosing a random free slot within a page provided by that pool. Freed small
+allocations are quarantined before being put back into circulation via a randomized delayed
+allocation pool. These features raise the difficulty of exploiting vulnerabilities by making the
+internal heap layout and allocator behavior unpredictable.</p>
+
+<p>CopperheadOS uses a ring buffer to extend the randomized quarantine with a deterministic layer
+enforcing a minimum delay before allocations are put back into circulation. The memory dedicated
+to the quarantine is evenly split between the two layers. CopperheadOS also adds a hash table
+providing enhanced double-free detection by tracking all delayed allocations within the ring
+buffer and randomized array. Previously, double-free could not be detected if the previously freed
+allocation was still in the quarantine. CopperheadOS makes the quarantine size configurable, with
+the size limit exposed as a user-facing setting.</p>
+
+<p>Small allocations are filled with junk data upon being released. In production builds, zeroing is
+used rather than filling with the usual 0xdf value to be more conservative. The 0xdf value isn’t
+able to guarantee that 32-bit pointers fault on 64-bit (0xdfdfdfdf) and tends to uncover bugs
+which is good in debug builds but not great when it triggers crashes from uses of uninitialized
+memory or other bugs in production. This prevents many information leaks caused by use without
+initialization and can make the exploitation of use-after-free and double free vulnerabilities
+more difficult. When allocations leave the quarantine, the junk data is validated to detect
+write-after-free. By default, 32 bytes are checked and full validation can be enabled via a
+user-facing setting. Junk validation was implemented in CopperheadOS and then successfully
+upstreamed into OpenBSD.</p>
+
+<p>Canaries can be placed at the end of small allocations to absorb small overflows and catch various
+forms of heap corruption upon free. This was a successfully upstreamed CopperheadOS extension. In
+CopperheadOS, this is enabled by default despite the memory usage cost since the supported devices
+have lots of memory and there’s a negligible performance impact. On 64-bit, the leading byte of
+heap canaries is zeroed to mitigate non-NUL-terminated string overflows at the expense of losing 8
+of the 64 bits of entropy.</p>
+
+<h4 id="large-allocations">Large allocations</h4>
+
+<p>In OpenBSD, only the leading 2048 bytes of large allocations are junk filled by default and junk
+filling isn’t used at all if page cache memory protection is enabled. CopperheadOS removes these
+optimizations, so it either uses full junk filling (default) or none. It makes sense for the cost
+to scale up with allocation size and junk filling is important for preventing information leaks
+via uninitialized malloc usage even with page cache memory protection enabled.</p>
+
+<p>A user-facing setting is exposed for placing guard pages at the end of large allocations to
+prevent and detect overflows at the cost of higher memory usage and reduced performance. It may be
+enabled by default on 64-bit in the future. Large allocations can be moved as close as possible to
+the end of the allocated region in order to trigger faults for small overflows, and CopperheadOS
+enables this by default when guard pages are enabled but not otherwise, unlike OpenBSD where it is
+simply enabled by default.</p>
+
+<h3 id="extended-_fortify_source-implementation">Extended <code class="language-plaintext highlighter-rouge">_FORTIFY_SOURCE</code> implementation</h3>
+
+<p>The <code class="language-plaintext highlighter-rouge">_FORTIFY_SOURCE</code> feature provides buffer overflow checking for standard C library functions
+in cases where the compiler can determine the buffer size at compile-time.</p>
+
+<p>Copperhead has added fortified implementations of the following functions in addition to the
+coverage Bionic already had:</p>
+
+<ul>
+  <li>fread - <a href="https://android-review.googlesource.com/#/c/160350/">upstreamed</a></li>
+  <li>fwrite - <a href="https://android-review.googlesource.com/#/c/160350/">upstreamed</a></li>
+  <li>getcwd - <a href="https://android-review.googlesource.com/#/c/162664/">upstreamed</a></li>
+  <li>memchr - <a href="https://android-review.googlesource.com/#/c/147372/">upstreamed</a></li>
+  <li>memrchr - <a href="https://android-review.googlesource.com/#/c/147372/">upstreamed</a></li>
+  <li>memcmp</li>
+  <li>memmem</li>
+  <li>pread - <a href="https://android-review.googlesource.com/#/c/147114/">upstreamed</a></li>
+  <li>pread64 - <a href="https://android-review.googlesource.com/#/c/147114/">upstreamed</a></li>
+  <li>pwrite - <a href="https://android-review.googlesource.com/#/c/162665/">upstreamed</a></li>
+  <li>pwrite64 - <a href="https://android-review.googlesource.com/#/c/162665/">upstreamed</a></li>
+  <li>readlink - <a href="https://android-review.googlesource.com/#/c/147291/">upstreamed</a></li>
+  <li>readlinkat - <a href="https://android-review.googlesource.com/#/c/147291/">upstreamed</a></li>
+  <li>realpath - <a href="https://android-review.googlesource.com/#/c/147365/">upstreamed</a></li>
+  <li>send - <a href="https://android-review.googlesource.com/#/c/169960/">upstreamed</a></li>
+  <li>sendto - <a href="https://android-review.googlesource.com/#/c/169960/">upstreamed</a></li>
+  <li>write - <a href="https://android-review.googlesource.com/#/c/162665/">upstreamed</a></li>
+</ul>
+
+<p>Additionally, the dlmalloc API has been annotated with <code class="language-plaintext highlighter-rouge">alloc_size</code> attributes to provide buffer
+overflow checking for the remaining code using the extended API.</p>
+
+<p>Some <a href="https://github.com/jemalloc/jemalloc/pull/250">false positives in jemalloc</a> were fixed in
+order to land support for <code class="language-plaintext highlighter-rouge">write</code> fortification in AOSP.</p>
+
+<h3 id="dynamic-object-size-queries">Dynamic object size queries</h3>
+
+<p>In CopperheadOS, system calls perform dynamic overflow checks in addition to the <code class="language-plaintext highlighter-rouge">_FORTIFY_SOURCE</code>
+checks based on compile-time buffer sizes from compiler analysis. The standard system call symbols
+are really wrappers querying <code class="language-plaintext highlighter-rouge">__dynamic_object_size</code> and then calling through to the usual raw
+system call wrappers. The makes the feature a drop-in enhancement even for precompiled third party
+code, much like the hardened allocator.</p>
+
+<p>The main component of the <code class="language-plaintext highlighter-rouge">__dynamic_object_size</code> feature is querying malloc for the object size.
+OpenBSD malloc tracks allocation metadata entirely via out-of-line data structures so it can
+accurately respond to these queries with either the size class of the allocation (minus the offset
+into it) or a sentinel value. Recursion would trigger deadlocking, so CopperheadOS tracks whether
+it is inside a malloc call via thread-local storage. The malloc queries are are disabled within
+malloc calls. This allows the dynamic object size checks to be used even for libc, after early
+initialization. Note that this currently returns a sentinel value for addresses beyond the first
+page of an allocation, but improving this is on the roadmap.</p>
+
+<p>Before querying malloc, there’s special handling for addresses within the calling thread’s stack,
+the executable and the isolated library region. These paths can only give a rough upper bound or
+abort the process if the address isn’t part of any valid object. It reduces the performance cost of
+the feature because querying malloc is relatively expensive.</p>
+
+<p>It’s restricted to system calls as it would be too expensive elsewhere. The read-only-after-init
+global used to enable this feature after early init code may be extended into a configurable
+feature. Calls like fread and fwrite sit in a middle ground between calls like memcpy and system
+calls so there could be 3 levels to the performance vs security compromise: off, system calls,
+system calls + fread/fwrite and everything. This would end up being part of a high level
+performance vs. security slider exposed to users.</p>
+
+<h3 id="function-pointer-protection">Function pointer protection</h3>
+
+<p>Writable function pointers in libc have been eliminated, removing low-hanging fruit for hijacking
+control flow with memory corruption vulnerabilities.</p>
+
+<p>The <code class="language-plaintext highlighter-rouge">at_quick_exit</code> and <code class="language-plaintext highlighter-rouge">pthread_atfork</code> callback registration functions have been extended with
+the same memory protection offered by the <code class="language-plaintext highlighter-rouge">atexit</code> implementation inherited from OpenBSD.</p>
+
+<p>The vDSO function pointer table is made read-only after initialization, as is the pointer to the
+function pointer table used to implement Android’s malloc debugging features. This has been
+<a href="https://android-review.googlesource.com/#/c/159730/">upstreamed</a>.</p>
+
+<p>Mangling of the setjmp registers was <a href="https://android-review.googlesource.com/#/c/170157/">implemented
+upstream</a> based on input from Copperhead.</p>
+
+<h3 id="miscellaneous-improvements">Miscellaneous improvements</h3>
+
+<p>The deprecated <code class="language-plaintext highlighter-rouge">Build.SERIAL</code> field is always set to <code class="language-plaintext highlighter-rouge">Build.UNKNOWN</code>, rather than the device’s
+serial number. Android Oreo introduced Build.getSerial() requiring the <code class="language-plaintext highlighter-rouge">READ_PHONE_STATE</code>
+permission, but still allows using <code class="language-plaintext highlighter-rouge">Build.SERIAL</code> unless <code class="language-plaintext highlighter-rouge">targetSandboxVersion</code> is set to 2.
+Direct access to the underlying properties, etc. was already removed in Android Oreo.</p>
+
+<p>Allocations larger than <code class="language-plaintext highlighter-rouge">PTRDIFF_MAX</code> are prevented, preventing a class of
+overflows. This has been upstreamed for
+<a href="https://android-review.googlesource.com/#/c/170800/">mmap</a> and
+<a href="https://android-review.googlesource.com/#/c/181202/">mremap</a>.</p>
+
+<p>A dedicated memory region is created for mapping libraries, to isolate them from the rest of the
+mmap heap. It is currently 128M on 32-bit and 1024M on 64-bit. A randomly sized protected region
+of up to the same size is placed before it to provide a random base within the mmap heap. The
+address space is reused via a simple address-ordered best-fit allocator to keep fragmentation at a
+minimum for dynamically loaded/unloaded libraries (plugin systems, etc.).</p>
+
+<p>Secondary stacks are randomized by inserting a random span of protected memory above the stack and
+choosing a random base within it. This has been <a href="https://android-review.googlesource.com/#/c/161453/">submitted
+upstream</a>.</p>
+
+<p>Secondary stacks are guaranteed to have at least one guard page above the stack, catching sequential
+overflows past the stack mapping. The <code class="language-plaintext highlighter-rouge">pthread_internal_t</code> structure is placed in a separate mapping
+rather than being placed within the stack mapping directly above the stack. It contains thread-local
+storage and the value compared against stack canaries is stored there on some architectures.</p>
+
+<p>Signal stacks were given guard pages to catch stack overflows. This was
+<a href="https://android-review.googlesource.com/#/c/144365/">upstreamed</a>.</p>
+
+<p>On 64-bit, the leading byte of stack canaries is zeroed to mitigate non-NUL-terminated string
+overflows at the expense of losing 8 of the 64 bits of entropy.</p>
+
+<p>Assorted small improvements:</p>
+
+<ul>
+  <li>have getauxval(…) set errno to ENOENT for missing values, per glibc 2.19 -
+<a href="https://android-review.googlesource.com/#/c/142250/">upstreamed</a></li>
+  <li>fix the mremap signature - <a href="https://android-review.googlesource.com/#/c/180130/">upstreamed</a></li>
+  <li>implementations of <code class="language-plaintext highlighter-rouge">explicit_memset</code> and <code class="language-plaintext highlighter-rouge">secure_getenv</code> for use elsewhere</li>
+  <li>replaced the broken implementations of <code class="language-plaintext highlighter-rouge">issetugid</code> and <code class="language-plaintext highlighter-rouge">explicit_bzero</code></li>
+  <li>larger default stack size on 64-bit (1MiB -&gt; 8MiB)</li>
+  <li>and various other assorted improvements</li>
+</ul>
+
+<h2 id="android-runtime">Android Runtime</h2>
+
+<p>As part of moving towards reducing trust in /data/ (i.e. state not covered by verified boot),
+<code class="language-plaintext highlighter-rouge">WITH_DEXPREOPT</code> and <code class="language-plaintext highlighter-rouge">WITH_DEXPREOPT_PIC</code> are always enabled and <code class="language-plaintext highlighter-rouge">WITH_DEXPREOPT_BOOT_IMG_ONLY</code> is
+always disabled to reduce usage of /data/dalvik-cache by the base system to a minimum. There is no
+usage of executable data in /data/dalvik-cache for the base system since even boot.oat is position
+independent. The boot.art file still has to be relocated via patchoat and is still stored in
+/data/dalvik-cache but isn’t executable. Avoiding that is also planned. The Android Runtime has
+been taught not to look for executable code (oat and odex files) in /data/dalvik-cache and execute
+and symlink read permissions for the dalvik cache label have been removed for system_server and
+domains only used by the base system, leaving it permitted by the policy only for untrusted_app,
+isolated_app and the shell domain for adb shell.</p>
+
+<p>CopperheadOS disables the ART JIT compiler and JIT profiling for security reasons. It also
+disables the usage of any generated profiles for compilation by switching the defaults from
+profile-based ahead-of-time verification/optimization to full verification/optimization. It
+currently leaves in place the default of using interpret-only verification at
+first-boot/boot/install and only doing optimized compilation in the background and for the new
+online A/B update system. This may be changed due to the cost of the JIT being disabled.</p>
+
+<h2 id="compiler-hardening">Compiler hardening</h2>
+
+<ul>
+  <li>A custom -fsanitize=local-init sanitizer is used to zero all uninitialized local variables to
+prevent information leaks. In some cases, it even prevents code execution vulnerabilities caused
+by attacker control over uninitialized memory. Existing optimization passes are quite good at
+removing it when it’s unnecessary. It fits in well with the hardened malloc since that takes
+care of zeroing allocations on free when they aren’t being directly unmapped.</li>
+  <li>Lightweight bounds checking for statically sized arrays via -fsanitize=bounds
+-fsanitize-trap=bounds is enabled by default in userspace for C and C++. It
+is currently disabled for a few libraries where it catches out-of-bounds
+access bugs in regular use.</li>
+  <li>For some sub-projects, lightweight object size bounds checking is performed
+(including extended checks for arrays) via -fsanitize=object-size
+-fsanitize-trap=object-size. This has a lot of overlap with the bounds
+sanitizer, but the redundant checks are optimized out when both are set to trap
+on error. It would be nice to enable this globally, but there’s too much code
+relying on undefined out-of-bounds accesses.</li>
+  <li>For some sub-projects, both unsigned and signed integer overflow checking via -fsanitize=integer
+-fsanitize-trap=integer (mostly backported from AOSP master).</li>
+  <li>Stack overflow checking for supported architectures via -fstack-check (not on ARM yet due to a
+<a href="https://gcc.gnu.org/bugzilla/show_bug.cgi?id=65958">severe bug</a>) - submitted upstream <a href="https://android-review.googlesource.com/#/c/163710/">for the
+NDK</a></li>
+  <li>For code where signed integer overflow checking is not enabled, overflow is made into
+well-defined behavior via -fwrapv to avoid security vulnerabilities like incorrectly written
+overflow checks being optimized out.</li>
+  <li>Expanded stack overflow canaries to all relevant functions via -fstack-protector-strong for both
+the NDK and base system. It has also been upstreamed for both the
+<a href="https://android-review.googlesource.com/#/c/143084/">NDK</a> and <a href="https://android-review.googlesource.com/#/c/185410/">base
+system</a>. CopperheadOS also enables
+-fstack-protector-strong for the Linux kernel. The lack of SSP for the kernel
+on ARM64 was reported upstream and -fstack-protector-strong has now been enabled.</li>
+  <li>Added <code class="language-plaintext highlighter-rouge">-Wsuggest-attribute=format</code> warning to audit for missing format attributes - dozens of
+cases have been found and fixed, providing more coverage for warnings about exploitable format
+string bugs.</li>
+</ul>
+
+<h2 id="enhanced-selinux-policies">Enhanced SELinux policies</h2>
+
+<ul>
+  <li>dalvikcache_data_file execute access limited to domains for third party apps (isolated_app
+and untrusted_app), preventing a trivial form of malware persistence without re-exploitation</li>
+  <li>dalvikcache_data_file symlinks forbidden</li>
+</ul>
+
+<p>See <a href="#android-runtime">the Android Runtime section</a> for details on how this works.</p>
+
+<ul>
+  <li>eliminated code injection holes
+    <ul>
+      <li>Removed gpu_device execute access - upstreamed</li>
+      <li>Removed ashmem and tmpfs execute access (traditionally used by the Dalvik JIT and
+CopperheadOS disables the usage in Firefox’s custom linker via an environment variable - no
+other compatibility issues have been found)</li>
+      <li>Removed execmod (text relocations) from domains other than untrusted_app -
+<a href="https://android-review.googlesource.com/#/c/269631/">upstreamed</a></li>
+      <li>Removed execmem from all but the untrusted_app, isolated_app and
+mediadrmserver domains (note: mediadrmserver will likely be removed).
+This is possible due to disabling the ART JIT compiler and forcing usage
+of the multiprocess/sandboxed WebView which runs as isolated_app.</li>
+      <li>Removed priv_app app_data_file execute (upstreamed) / execute_no_trans access</li>
+      <li>The remaining hole in full (not just in-memory) w^x is app_data_file
+execution for untrusted_app. The intention is to allow apps to opt-in to
+removing it and then upstream that, with the goal of changing the default
+as a breaking change in a future API level to force opting into the less
+secure policy along with discouraging the pattern.</li>
+    </ul>
+  </li>
+  <li>Split out untrusted_apps signed with the release/media/shared keys (i.e. all of the base system
+untrusted_apps) into untrusted_base_app, allowing the removal of execmod, execmem,
+app_data_file execute, dalvikcache_data_file execute and asec access</li>
+  <li>Split out isolated_apps signed with the release/media/shared keys (i.e. all of the base system
+isolated_apps) into isolated_base_app, allowing the removal of dalvikcache_data_file execute</li>
+  <li>removed mediaserver’s write access to sysfs - upstreamed</li>
+  <li>reported a hole in the isolation for system apps running as the system user upstream, which was
+prompted fixed: ptrace could be used to take control of other system apps running as the system
+user</li>
+</ul>
+
+<p>Access to timing information via /proc/ has been limited to a few core services in order to close
+sensitive information from being obtained via timing side channels. This has been
+<a href="https://android-review.googlesource.com/#/c/252368/">upstreamed</a>. This is being gradually
+extended to enforce fine-grained restrictions for the rest of the sensitive information exposed in
+/proc: <a href="https://android-review.googlesource.com/#/c/255380/">zoneinfo</a>, vmstat.</p>
+
+<p>Basic network interface and routing information (<code class="language-plaintext highlighter-rouge">/proc/net/dev</code>, <code class="language-plaintext highlighter-rouge">/proc/net/if_inet6</code>,
+<code class="language-plaintext highlighter-rouge">/proc/net/ipv6_route</code>, <code class="language-plaintext highlighter-rouge">/proc/net/route</code>) is split out from the <code class="language-plaintext highlighter-rouge">proc_net</code> label into a new
+<code class="language-plaintext highlighter-rouge">proc_net_devroute</code> label with it permitted in the same domains and <code class="language-plaintext highlighter-rouge">proc_net</code> access is removed
+for <code class="language-plaintext highlighter-rouge">untrusted_app</code> / <code class="language-plaintext highlighter-rouge">untrusted_base_app</code>. Since monitoring network connections is a useful
+feature, the org.secuso.privacyfriendlynetmonitor app is bundled and given a dedicated netmonitor
+SELinux domain based on <code class="language-plaintext highlighter-rouge">untrusted_base_app</code> with <code class="language-plaintext highlighter-rouge">proc_net</code> access added back. Access is also
+still permitted via the disabled by default ADB shell. Since monitoring by users is covered well
+by the base system, there’s little reason for any other apps to have access to this information.
+A small subset of the information is available via NetworkStatsManager, but it requires the
+<code class="language-plaintext highlighter-rouge">PACKAGE_USAGE_STATS</code> permission to retrieve information for other apps which has to be manually
+granted to third party apps by the user and can’t simply be requested by an app directly.</p>
+
+<p>A dedicated SELinux domain is used for the over-the-air updater app and access to
+<code class="language-plaintext highlighter-rouge">update_engine_service</code> and <code class="language-plaintext highlighter-rouge">ota_package_file</code> is removed from <code class="language-plaintext highlighter-rouge">priv_app</code>, preventing other apps
+from downgrading the OS version since <code class="language-plaintext highlighter-rouge">update_engine</code> only performs a signature check.</p>
+
+<h2 id="encryption-and-authentication">Encryption and authentication</h2>
+
+<h3 id="support-for-longer-passwords">Support for longer passwords</h3>
+
+<p>The maximum password length is raised from 16 characters to 64 characters.</p>
+
+<h3 id="reduced-side-channel-leakage-for-file-based-encryption">Reduced side channel leakage for file-based encryption</h3>
+
+<p>Padding for ext4 encryption file names is increased from the default of 4 bytes to 32 bytes. This
+reduces the amount of information leaked about file name length. There’s lots of room for further
+improvements reducing metadata leakage but it involves changes the ext4 encryption format and
+would need to happen in the Linux kernel.</p>
+
+<h3 id="pin-entry-scrambling">PIN entry scrambling</h3>
+
+<p>A setting is offered for randomizing the layout of PIN entry. It will become significantly more
+useful once the 2 factor authentication feature above is implemented, since the combination of a
+strong passphrase with a fingerprint + PIN as a secondary unlock method for convenience will be
+the recommended setup for most people. It currently only impacts the lockscreen but may be
+extended.  Note that the owner account setting also currently controls this for the lockscreen as
+a whole, but it will eventually use the per-user setting instead.</p>
+
+<h3 id="fingerprint-unlock">Fingerprint unlock</h3>
+
+<p>The number of retries before permanent lockout from fingerprint unlock is reduced from 20 to 5.
+Since the timed lockout threshold is 5, only permanent lockout is used as it takes precedence.</p>
+
+<h2 id="privacy-focused-defaults">Privacy-focused defaults</h2>
+
+<p>The default settings have been altered to emphasize privacy over small conveniences.</p>
+
+<p>Location tagging is disabled by default in the Camera app, and there is no longer a prompt about
+choosing whether to enable it on the first launch. It can still be enabled using the Camera’s
+settings menu.</p>
+
+<p>Personalized keyboard suggestions based on gathering input history are disabled by default.</p>
+
+<p>Sensitive notifications are hidden on the lockscreen by default&gt;</p>
+
+<p>Passwords are hidden by default.</p>
+
+<h2 id="over-the-air-updates">Over-the-air updates</h2>
+
+<p>The new update system is a minimal, clean layer on top of the <code class="language-plaintext highlighter-rouge">update_engine</code> infrastructure from
+ChromeOS and Brillo. It exclusively implements automatic background updates. User control is
+offered via simple toggles to control whether it downloads on metered data connections or when
+roaming is detected rather than updating ever being a manual procedure. Newer devices have dual OS
+partitions rather than only firmware partitions and can update the alternate set of partitions in
+the background at low priority without causing any disruption to users. By the time the user needs
+to be informed about an update, it’s already complete along with the bulk of the post-install work
+like ahead-of-time compilation for apps not bundled preoptimized within the OS, which is important
+for CopperheadOS since it disables JIT compilation / profiling in favor of simply performing full
+AOT compilation with no JIT and minimal use of the interpreter for cold code like one-time
+initialization to save space / memory.</p>
+
+<p>The updater fetches a device-specific/channel-specific plain text file from a static file server
+with a space-separated version and build date on each line with the most recent builds at the top.
+Only the first line of the file is used by the update client within the OS. The client will try to
+fetch an incremental for the current version to the new version. If an incremental isn’t
+available, it will fall back to a full update package able to update from any past version.
+Currently, incrementals from the past 3 versions to the current are generated and then published.
+The incremental or full update is then downloaded, the signature is verified and the build date is
+then checked against the build date claimed by the server to prevent downgrade attacks by an
+attacker with control of the server. The payload is then passed to <code class="language-plaintext highlighter-rouge">update_engine</code>, which performs
+another layer of signature verification on the payload. When <code class="language-plaintext highlighter-rouge">update_engine</code> reports completion, a
+notification will be presented to the user with a reboot button, although the update will kick in
+when the device is booted again whether or not it’s via the notification.</p>
+
+<p>The updater currently checks for updates every hour. If a failure occurs while trying to download
+an update, it has the current download state saved and will resume the download when it next runs
+if it’s still an update to the most recent version. Rather than waiting a whole hour to retry if a
+failure occurs, a new update check is also scheduled to occur after at least 30 seconds. It will
+usually end up being longer due to the conservative nature of Android’s JobScheduler, but not
+nearly as long as waiting for the next regular interval.</p>
+
+<p>The dual partition system makes updates significantly more robust since the updates are performed
+on a set of unused partitions and have no impact until they are verified and marked as ready. The
+next boot of the OS will then boot into the new version. A verification step is run fairly late in
+the late boot process where every block from the OS partitions is read (<code class="language-plaintext highlighter-rouge">update_verifier</code>) in
+order to leverage dm-verity to detect any corruption. If anything goes wrong during booting and
+verification, it can automatically fall back to the previous version since it’s still installed on
+the previously used set of partitions.</p>
+
+<h2 id="networking">Networking</h2>
+
+<p>Interfaces are given a random MAC address whenever they are brought up. This can be disabled via a
+toggle in the network settings. Wireless MAC addresses are also unconditionally randomized during
+scanning (pre-associated). The hostname is randomized at boot by default, and it can also be
+disabled in order to use the persistent hostname based on <code class="language-plaintext highlighter-rouge">ANDROID_ID</code> instead.</p>
+
+<p>The kernel TCP/IP settings are adjusted to prioritize security. A minimal firewall is provided
+with some options that are always sane including dropping traffic with conntrack’s INVALID state
+and reverse path filtering. Android has group-based control over networking so basic control over
+networking is in the realm of permissions, but more advanced firewall features might be provided
+down the road.</p>
+
+<!--
+Support for IP sets is enabled in the kernel and the ipset utility is provided, but not yet
+integrated in an automated way.
+-->
+
+<h2 id="permissions">Permissions</h2>
+
+<p>Platform key signature permissions are restricted to system applications, to prevent old
+applications signed with the platform key remaining as a threat.</p>
+
+<p>Infrastructure is implemented for disabling permissions when apps are in the background. This is
+used to deny access to the clipboard to apps running in the background, with a per-app toggle for
+enabling it (such as for clipboard managers) in the Settings app. Similarly, apps cannot begin an
+audio recording stream in the background and this will likely be extended to fully preventing
+audio recording in the background even when it was started in the foreground. Toggles for
+background location access and background sensors access are also implemented.</p>
+
+<p>CopperheadOS enables Android’s hidden
+<a href="https://android.googlesource.com/platform/frameworks/base/+/9c165d76010d9f79f5cd71978742a335b6b8d1b4"><code class="language-plaintext highlighter-rouge">PERMISSIONS_REVIEW_REQUIRED</code></a>
+feature, enforcing that the user must sign off on every dangerous permission after installing
+apps. It has no impact on modern apps targeting API level 23 or later. For apps targeting API
+level 22 or lower, it prevents apps from starting until the user proceeds through a prompt
+allowing each dangerous permission to be toggled off, nearly identical to the user interface in
+Settings -&gt; Apps -&gt; App name -&gt; Permissions but with the app not able to run before the user has
+made their desired changes and accepted it. Since this feature isn’t widely used, some issues were
+encountered with the implementation which have been fixed or worked around in CopperheadOS. These
+fixes are being <a href="https://android-review.googlesource.com/#/c/platform/packages/apps/PackageInstaller/+/452540/">submitted
+upstream</a>
+where applicable.</p>
+
+<p>The <code class="language-plaintext highlighter-rouge">INTERNET</code> permission is marked as dangerous to make it user-facing and added to a new NETWORK
+permission group with a user-facing toggle. Unlike other dangerous permissions, it’s enabled by
+default for apps targeting API level 23 or later for compatibility.</p>
+
+<p>An <code class="language-plaintext highlighter-rouge">OTHER_SENSORS</code> dangerous permission is introduced and added as a requirement for access to
+sensors without an existing permission (<code class="language-plaintext highlighter-rouge">BODY_SENSORS</code> for heartbeat sensors). It’s paired with an
+<code class="language-plaintext highlighter-rouge">OTHER_SENSORS</code> permission group used to expose a user-facing toggle. Like the redone <code class="language-plaintext highlighter-rouge">INTERNET</code>
+permission, it’s enabled by default for apps with all API levels for compatibility. Since this
+isn’t an existing permission, there isn’t a way to know which apps require it so it’s considered
+to be requested by every app.</p>
+
+<p>The <code class="language-plaintext highlighter-rouge">SET_TIME_ZONE</code> permission is changed to a signature|privileged permission from a normal
+permission to match <code class="language-plaintext highlighter-rouge">SET_TIME</code>. This was implemented upstream by Google for Android Oreo.</p>
+
+<h2 id="attack-surface-reduction">Attack surface reduction</h2>
+
+<p>NFC, NDEF Push and Bluetooth are disabled by default. An NFC quick tile is included to more easily
+toggle it as needed.</p>
+
+<p>A toggle is provided to disable the camera on the lockscreen.</p>
+
+<p>Some quick tiles (bluetooth, nfc, airplane mode, WiFi, auto-rotate, data saver, hotspot, cellular
+data, battery saver) have an authentication requirement added matching the standard authentication
+requirement for the cast and location quick tiles.</p>
+
+<p>An “LTE only” option is added to Settings -&gt; Wireless &amp; networks -&gt; More -&gt; Cellular networks -&gt;
+Preferred network type. It disables usage of the assorted 2G and 3G protocols.</p>
+
+<p>A minimal port of grsecurity’s <code class="language-plaintext highlighter-rouge">PERF_HARDEN</code> feature extends the <code class="language-plaintext highlighter-rouge">kernel.perf_event_paranoid</code>
+sysctl with an additional level (3). This is enabled by default on production builds, with a
+system property (<code class="language-plaintext highlighter-rouge">security.perf_harden</code>) accessible to the ADB shell user for controlling it. The
+userspace integration has been upstreamed:
+<a href="https://android-review.googlesource.com/#/c/233736/">1</a>,
+<a href="https://android-review.googlesource.com/#/c/234352/">2</a>,
+<a href="https://android-review.googlesource.com/#/c/234400/">3</a> and the kernel functionality was merged
+alongside it.</p>
+
+<p>CopperheadOS disables allows disabling unprivileged access to ptrace by enabling the stackable
+Yama LSM and setting the <code class="language-plaintext highlighter-rouge">kernel.yama.ptrace_scope</code> sysctl to 2 by default. It’s exposed in the
+user interface as disabling native debugging since it will disable other debugging features with
+added attack surface too.</p>
+
+<p>A port of grsecurity’s <code class="language-plaintext highlighter-rouge">DENYUSB</code> feature provides a <code class="language-plaintext highlighter-rouge">kernel.deny_new_usb</code> sysctl for disabling the
+recognition of new USB devices. It reduces the attack surface exposing by USB drivers when active.
+Integration in the lockscreen infrastructure provides automatic toggling based on whether the
+screen is locked. A system property is exposed to users via Settings -&gt; Security -&gt; Device
+security for choosing between it being enabled, controlled by lock state or disabled. The current
+threat model only involves protecting the OS after the initial decryption process. It doesn’t
+provide any protection for the early boot environment or the recovery image as that would be a
+different kind of feature.</p>
+
+<p>Unlike Android, CopperheadOS uses separate kernel builds for production (user) and developer
+(userdebug, eng) builds. This will make it possible to disable unnecessary debugging features in
+production.</p>
+
+<p>CopperheadOS disables the kernel’s <code class="language-plaintext highlighter-rouge">CONFIG_AIO</code> feature. It isn’t used or exposed by the base
+system and is a dubious feature. It performs no better than thread pools and it can still block,
+along with having coverage of only a tiny portion of blocking system calls even when considering
+only commonly used system calls for IO. There are no known compatibility issues caused by having
+this disabled. Since this is such a dubious niche feature, it’s also very poorly tested and it
+doesn’t get much attention. Proposed improvements have been blocked based on the concern that
+POSIX AIO is such a bad interface that trying to improve/extend it would be harmful. Following the
+lead of CopperheadOS on this front has been proposed and accepted upstream for the recommended
+Android kernel configuration used to derive device specific configurations.</p>
+
+<h3 id="recovery">Recovery</h3>
+
+<p>Various debug options are removed from the recovery menu in production builds.</p>
+
+<h2 id="security-focused-apps">Security-focused apps</h2>
+
+<h3 id="chromium">Chromium</h3>
+
+<p>See the <a href="#chromium--webview">top level section</a>.</p>
+
+<h3 id="silence">Silence</h3>
+
+<p>The AOSP SMS app (Messaging) is replaced with Silence to provide the option of end-to-end
+encryption over SMS when a data connection is not available to either contact to enable better
+options.</p>
+
+<h3 id="pdf-viewer">PDF Viewer</h3>
+
+<p>CopperheadOS includes a custom PDF Viewer based on pdf.js in a WebView. It doesn’t require any
+permissions since it relies on content providers via <code class="language-plaintext highlighter-rouge">ACTION_VIEW</code> and <code class="language-plaintext highlighter-rouge">ACTION_OPEN_DOCUMENT</code> for
+the application/pdf mime type rather than requesting storage access. It only has access to data
+that the user explicitly provides to it.</p>
+
+<p>Since JavaScript is memory safe, memory safety bugs in the PDF implementation itself are not a
+concern and the performance is still tolerable. The app exposes a very small subset of the
+Chromium attack surface and the WebView sandbox acts as an additional layer of isolation that’s
+significantly stronger than the usual app sandbox. It renders via a 2D canvas and loads fonts via
+the FontFace API using the hardened Chromium font rendering stack (font sanitization, etc.). It
+loads a new viewer for each document in order to improve isolation between documents compared to
+reusing the same pdf.js environment.</p>
+
+<p>The app uses Content Security Policy (CSP) to permit only static content from the app assets,
+image <code class="language-plaintext highlighter-rouge">blob:</code> data and a placeholder HTTPS URL used to receive data from the app. The policy
+prevents dynamic and inline JS/CSS and provides some attack surface reduction for the DOM. JS API
+attack surface is limited indirectly due to the code being static. Content access, file access and
+network access are also disabled for the WebView, so it can only access apk assets and resources.
+It receives the PDF data from the app by making a placeholder HTTPS request which is substituted
+with the PDF input stream by the app without needing to permit the WebView to have direct access
+to content providers. Various unnecessary WebView features are disabled including caching,
+cookies, saving form data and loading other URLs.</p>
+
+<p>An alternative to this would be a custom isolatedProcess / seccomp-bpf sandbox to contain a pure
+Java PDF library and some associated native code, but pdf.js was deemed to be a more secure and
+viable option than any other existing open source libraries. The widely used libraries are written
+in C and C++ (mupdf, poppler, pdfium). The pdf.js solution is also nearly ideal when the source of
+the PDFs is Chromium or a Chromium-based browser due to presenting only a small subset of the same
+attack surface.</p>
+
+<p>The PDF Viewer app also uses targetSandboxVersion 2 which uses a substantially more restricted
+SELinux domain barely permitting anything beyond communication using intents.</p>
+
+<h2 id="kernel-hardening">Kernel hardening</h2>
+
+<p>The <a href="https://github.com/thestinger/linux-hardened">linux-hardened</a> project is being developed
+alongside CopperheadOS to provide a publicly available hardened Linux kernel. Most changes are
+intended to land upstream with it remaining a minimal set of out-of-tree changes. The focus is on
+protecting the kernel itself from exploitation. It also offers an improved implementation of
+Address Space Layout Randomization and miscellaneous hardening features. Android devices use
+long-term support kernel branches so these changes are being backported when applicable to the
+current generation CopperheadOS kernels after being implemented in linux-hardened for the latest
+mainline kernel stable branch.</p>
+
+<p>CopperheadOS also benefits from backporting work done by Google from the mainline kernel such as
+PAN emulation preventing the kernel from accessing userspace memory outside of userspace accessor
+functions, HARDENED_USERCOPY providing dynamic checks of copies to/from userspace and
+<code class="language-plaintext highlighter-rouge">__ro_after_init</code> which CopperheadOS currently applies from Google’s Android O preview kernel
+releases.</p>
+
+<p>On current generation devices, kernels are compiled with Clang rather than GCC. This means
+compiler hardening work is shared with the CopperheadOS userspace. The -fsanitize=local-init
+feature mentioned in the <a href="#compiler-hardening">compiler hardening section</a> is also used for the
+kernel builds to zero all uninitialized variables. Google will likely be moving towards using a
+subset of trapping UBSan, CFI and SafeStack in the kernel similar to userspace, so CopperheadOS is
+focused on other areas.</p>
+
+<p>Pages are zeroed upon being freed to reduce the lifetime of sensitive data. Pages are also
+verified to be zero before being doled out again to catch write-after-free bugs.</p>
+
+<p>The slab allocator (SLUB) is hardened via disabling slab merging, additional memory corruption
+sanity checks for non-kmalloc slab caches, per-cache XOR encryption for the free lists and zeroing
+data when freed. On allocation, write-after-free is detected by verifying that the memory is still
+zeroed from the page and slab sanitization. A pointer-size random value is placed after memory
+allocations in order to absorb small buffer overflows, rendering them harmless. The value is
+checked on free in order to detect heap corruption. A different value is used for free and used
+slots, providing basic double-free detection that’s usually missing due to inline metadata. The
+upstream <code class="language-plaintext highlighter-rouge">HARDENED_USERCOPY</code> feature is extended to check the cookies in <code class="language-plaintext highlighter-rouge">__check_heap_object</code>
+which provides basic use-after-free detection for the user copy functions in addition to more
+frequent heap corruption checks. Ideally, a hardened allocator with out-of-line metadata would be
+implemented along the same lines as the malloc implementation in userspace.</p>
+
+<p>An equivalent to <code class="language-plaintext highlighter-rouge">_FORTIFY_SOURCE</code> in userspace is implemented, currently covering the string.h
+str/mem family functions.</p>
+
+<p>The ASLR implementation is improved via stronger stack randomization and randomizing the lower
+bits of the argument block. This builds upon the higher entropy randomization already provided by
+Android compared to Linux kernel defaults for the mmap and executable bases. The executable base
+is moved from the middle of the address base to very near the start of it to make room for the
+higher stack entropy and to reduce address space fragmentation in general.</p>
+
+<p>A port of grsecurity’s <code class="language-plaintext highlighter-rouge">DEVICE_SIDECHANNEL</code> feature prevents information leakage via timing data
+leaked by character and block devices. Processes without the MKNOD capability are provided with
+the creation time as the access and modify time, along with not receiving notifications for either
+access or modify events.</p>
+
+<p>Extra entropy is gathered from uninitialized memory in early boot feature) to improve the
+effectiveness of probabilistic kernel mitigations relying on entropy available before the hardware
+random number is initialized. This isn’t an issue for userspace after init/ueventd since init
+blocks until 512 bytes is read from the hardware random number generator and also restores saved
+entropy from previous boots.</p>
+
+<p>There’s also an assortment of minor hardening changes being expanded over time.</p>
+
+<p>For kernel attack surface reduction features, see <a href="#attack-surface-reduction">the relevant
+section</a>.</p>
+
+<h2 id="miscellaneous-features">Miscellaneous features</h2>
+
+<p>SQLite’s <code class="language-plaintext highlighter-rouge">SECURE_DELETE</code> feature is enabled, resulting in deleted content being overwritten with
+zeros. This prevents sensitive data from lingering around in databases after it’s deleted. SQLite
+is widely used by Android’s base system is the standard storage mechanism for applications, so
+this results in lots of coverage. This has been
+<a href="https://android-review.googlesource.com/#/c/209123/">upstreamed</a>. The default journal mode is
+also set to <code class="language-plaintext highlighter-rouge">TRUNCATE</code> rather than <code class="language-plaintext highlighter-rouge">PERSIST</code> to stop data from lingering in the journal after
+transactions. This change has also been
+<a href="https://android-review.googlesource.com/#/c/210080/">upstreamed</a>.</p>
+
+<p>The hidepid=2 option is enabled for procfs, hiding processes owned by other UIDs. Since non-system
+apps each have a unique UID, this prevents apps from obtaining sensitive information about each
+other via /proc. There are exceptions for a few of the core services via the gid mount option
+(lmkd, servicemanager, keystore, debuggerd, logd, system_server) but not for apps. A subset of
+this was provided by SELinux, but it isn’t fine-grained enough. This enhancement was <a href="https://android-review.googlesource.com/#/c/181345/">adopted
+upstream</a> based on the implementation in
+CopperheadOS (it had been planned, but they were unaware of the gid mount option).</p>
+
+<p>On the Pixel 2 and later, the getentropy implementation is switched to using a blocking call to
+getrandom to wait until the kernel CSPRNG is properly seeded in early boot. After very early boot,
+it never blocks again. On stock Android, a non-blocking call is used with a fallback to
+/dev/urandom if the kernel CSPRNG is not yet properly seeded. On the Pixel 1, getrandom is used
+with the blocking disabled because it can block for very long periods of time / indefinitely on
+boot.</p>
+
+<p>Some misuses of <code class="language-plaintext highlighter-rouge">memset</code> for sanitizing data were replaced with <code class="language-plaintext highlighter-rouge">explicit_memset</code>, to stop the
+compiler from optimizing them out.</p>
+
+<p>Many global function pointers in Android’s codebase have been made read-only. This is ongoing work
+and will need to be complemented with Control Flow Integrity (CFI) as many are compiler-generated.
+Some of this work has been upstreamed: <a href="https://android-review.googlesource.com/#/c/172190/">1</a>,
+<a href="https://android-review.googlesource.com/#/c/172140/">2</a>.</p>
+
+<h1 id="past-features">Past features</h1>
+
+<p>These features were available on CopperheadOS in the past and are still relevant but are currently
+unavailable. For an up-to-date list for the current branch, see <a href="https://github.com/copperhead/bugtracker/issues?q=is%3Aissue+is%3Aopen+label%3A%22History%3A+past-feature%22">the issue tracker
+tag</a>.
+This section only includes features that already had documentation written before they were lost
+after a port to a newer Android version.</p>
+
+<h2 id="security-level-and-advanced-configuration">Security level and advanced configuration</h2>
+
+<p><strong><em>Note: This is not yet implemented for the port to Nougat, due to an upstream regression in
+property handling.</em></strong></p>
+
+<p>A slider is exposed in Settings -&gt; Security -&gt; Advanced for controlling the balance between
+performance and security. By default, it starts at 50%. It provides high level control over
+various performance vs. security tunables exposed there. All of the options can also be set
+manually rather than using the slider.</p>
+
+<h2 id="encryption-and-authentication-1">Encryption and authentication</h2>
+
+<h3 id="support-for-a-separate-encryption-password">Support for a separate encryption password</h3>
+
+<p><strong><em>Note: this feature needs to be redesigned for Android Nougat, and will be replaced by <a href="https://github.com/copperhead/bugtracker/issues/451">a
+superior 2 factor authentication mechanism</a>.</em></strong></p>
+
+<p>In vanilla Android, the encryption password is tied to the lockscreen password. That’s the default
+in CopperheadOS, but there’s full support for setting a separate encryption password. This allows
+for a convenient pattern, pin or password to be used for unlocking the screen while using a very
+strong encryption passphrase. If desired, the separate encryption password can be removed in favor
+of coupling it to the lockscreen password again.</p>
+
+<p>When a separate encryption password is set, the lockscreen will force a reboot after 5 failed
+unlocking attempts to force the entry of the encryption passphrase. This makes it possible to use a
+convenient unlocking method without brute force being feasible. It offers similar benefits as wiping
+after a given number of failures or using a fingerprint scanner without the associated drawbacks.</p>
+
+      </section>
+    </div>
+
+    
+  </body>
+  <footer>
+    <style>
+      .footer
+      {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        background-color: #000000;
+        color: white;
+        text-align: center;
+      }
+    </style>
+
+    <div class="footer">
+      <a href="https://copperhead.co/" class="btn">Copperhead Home</a></li>
+      <a href="https://copperhead.co/android" class="btn">Android</a></li>
+      <a href="mailto:info@copperhead.co" class="btn">Contact</a></li>
+      <a href="https://twitter.com/CopperheadSec" class="btn">Twitter</a></li>
+    </div>
+  </footer>
+</html>
