@@ -22,7 +22,7 @@ title: CopperheadOS Documentation Repository
 email: support@copperhead.co
 description: CopperheadOS Documentation Repository
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "https://copperheados.github.io" # the base hostname & protocol for your site, e.g. http://example.com
+url: "https://copperheados.com" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: copperheadsec
 github_username:  copperheados
 
