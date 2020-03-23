@@ -21,6 +21,20 @@ testing can do so by selecting "Beta" channel in *Settings -> System -> Advanced
 * TOC
 {:toc}
 
+### CopperheadOS Release: 2020.03.20
+* March security patch
+* Chromium update
+  * Hardened Chromium
+  * Fixed download bug
+  * Trichrome addition
+* Updater additions
+  * Updater now accurately warns against downloading over cell data
+  * Additional Updater UX for verification process
+* Various F-Droid fixes
+* Various core system updates and optimizations
+* Hardened Crosshatch, Blueline, Bonito and Sargo kernels
+* Included APN settings for all major US, Canada and EU carriers
+
 ### CopperheadOS Android 10 Release: 2020.02.12
 * December, January and February security patch
 * Chromium -> 80
