@@ -12,7 +12,7 @@ CopperheadOS](https://copperhead.co/contact/#getstarted) to enterprise and large
 
 ## Copyright and License
 
-[Copperhead](https://copperhead.co) is the only company that has rights over the CopperheadOS project and owns the trademark, branding and multiple international copyrights for CopperheadOS and it's components. These protections covers all components of CopperheadOS from [it's initial release](/blog/2015/08/21/alpha) to the present day. These components include all of [our past, current and future features](/android/docs/technical_overview) as well as:
+[Copperhead](https://copperhead.co) is the only company that has rights over the CopperheadOS project and owns the trademark, branding and multiple international copyrights for CopperheadOS and it's components. These protections covers all components of CopperheadOS from [it's initial release](/blog/alpha) to the present day. These components include all of [our past, current and future features](/android/docs/technical_overview) as well as:
 
 *   Core CopperheadOS Software
 *   Updater
@@ -20,7 +20,7 @@ CopperheadOS](https://copperhead.co/contact/#getstarted) to enterprise and large
 
 ### Copyright
 
-Copperhead Limited owns the copyright to CopperheadOS in [US](https://cocatalog.loc.gov/cgi-bin/Pwebrecon.cgi?Search_Arg=copperheados&Search_Code=FT*&PID=kkvCZ6GJ9QF6WtjQez0iKT2FF-sRh&SEQ=20200320153141&CNT=25&HIST=1) and [Canada](https://www.ic.gc.ca/app/opic-cipo/cpyrghts/dtls.do?fileNum=1150787&type=1&lang=eng).
+Copperhead Limited owns the copyright to CopperheadOS in US and [Canada](https://www.ic.gc.ca/app/opic-cipo/cpyrghts/dtls.do?fileNum=1150787&type=1&lang=eng).
 
 ### License
 

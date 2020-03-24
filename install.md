@@ -15,14 +15,22 @@ description: Instructions on installing and updating CopperheadOS
 
 CopperheadOS currently has official support for the following devices:
 
+* Pixel 2 (walleye)
+* Pixel 2 XL (taimen)
+* Pixel 3 (blueline)
+* Pixel 3 XL (crosshatch)
+* Pixel 3a (sargo)
+* Pixel 3a XL (bonito)
+
+At one point CopperheadOS was supported on the:
+
 * HiKey (hikey)
 * HiKey 960 (hikey960)
 * Nexus 5X (bullhead)
 * Nexus 6P (angler)
 * Pixel (sailfish)
 * Pixel XL (marlin)
-* Pixel 2 (walleye)
-* Pixel 2 XL (taimen)
+
 
 It can be ported to other Android devices with Treble support via the standard [device porting process](/building#device-porting-process). Most devices lack support for the
 [security requirements](/devices#minimum-requirements-for-copperheados-support)
@@ -205,11 +213,6 @@ Finally, select the "Apply update from ADB" option in the recovery menu and side
 with adb:
 
     adb sideload taimen-ota_update-2018.03.01.14.zip
-
-## Reporting bugs
-
-Bugs (or feature requests) should be reported to [the issue tracker on
-GitHub](https://github.com/copperhead/bugtracker/issues).
 
 ## Clearing custom AVB key
 

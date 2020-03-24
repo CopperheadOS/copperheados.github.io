@@ -49,7 +49,7 @@ Members of CBI receive:
 ### Prerequisites
 Before enrolling in CBI members are expected to:
 * Fully read and comprehend our [build documentation](/building#copperheados-build-instructions)
-* Understand Copperhead's [licensing](/releases#licensing)
+* Understand Copperhead's [licensing](/licensing)
 * Build CopperheadOS/Chromium from source
 * Have the pre-existing hardware and access to devices they are building for
 

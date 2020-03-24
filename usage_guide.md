@@ -9,7 +9,7 @@ description: Recommendations on how to use CopperheadOS effectively.
 {: .no_toc}
 
 CopperheadOS is a Linux-based mobile operating system with a focus on privacy and security. It
-builds on the latest stable release of the Android Open Source Project (8.1.0) which is Android
+builds on the latest stable release of the Android Open Source Project (10) which is Android
 without any Google apps and services.
 
 This usage guide documents the user experience of the OS with a focus on how it compares to the

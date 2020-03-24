@@ -7,10 +7,8 @@ description: Technical overview of the currently implemented features in Copperh
 # Technical overview of CopperheadOS
 {: .no_toc}
 
-This is a technical overview of the currently implemented features in CopperheadOS. For a list of
-planned features, see [the issues tagged as enhancements on the
-tracker](https://github.com/copperhead/bugtracker/labels/enhancement). The scope will be expanded
-as more features are implemented.
+This is a technical overview of the currently implemented features in CopperheadOS.
+The scope will be expanded as more features are implemented.
 
 CopperheadOS is based on the latest stable release of the Android Open Source Project and has the
 baseline privacy and security features from there, which are already far ahead of any traditional
@@ -707,7 +705,7 @@ SELinux domain barely permitting anything beyond communication using intents.
 
 ## Kernel hardening
 
-The [linux-hardened](https://github.com/thestinger/linux-hardened) project is being developed
+The linux-hardened project was being developed
 alongside CopperheadOS to provide a publicly available hardened Linux kernel. Most changes are
 intended to land upstream with it remaining a minimal set of out-of-tree changes. The focus is on
 protecting the kernel itself from exploitation. It also offers an improved implementation of
@@ -806,15 +804,9 @@ Some of this work has been upstreamed: [1](https://android-review.googlesource.c
 # Past features
 
 These features were available on CopperheadOS in the past and are still relevant but are currently
-unavailable. For an up-to-date list for the current branch, see [the issue tracker
-tag](https://github.com/copperhead/bugtracker/issues?q=is%3Aissue+is%3Aopen+label%3A%22History%3A+past-feature%22).
-This section only includes features that already had documentation written before they were lost
-after a port to a newer Android version.
+unavailable.
 
 ## Security level and advanced configuration
-
-***Note: This is not yet implemented for the port to Nougat, due to an upstream regression in
-property handling.***
 
 A slider is exposed in Settings -> Security -> Advanced for controlling the balance between
 performance and security. By default, it starts at 50%. It provides high level control over
@@ -825,8 +817,7 @@ manually rather than using the slider.
 
 ### Support for a separate encryption password
 
-***Note: this feature needs to be redesigned for Android Nougat, and will be replaced by [a
-superior 2 factor authentication mechanism](https://github.com/copperhead/bugtracker/issues/451).***
+***Note: this feature needs to be redesigned for Android 10***
 
 In vanilla Android, the encryption password is tied to the lockscreen password. That's the default
 in CopperheadOS, but there's full support for setting a separate encryption password. This allows
