@@ -12,7 +12,7 @@ CopperheadOS](https://copperhead.co/contact/#getstarted) to enterprise and large
 
 ## Copyright and License
 
-[Copperhead](https://copperhead.co) is the only company that has rights over the CopperheadOS project and owns the trademark, branding and multiple international copyrights for CopperheadOS and it's components. These protections covers all components of CopperheadOS from [it's initial release](https://copperhead.co/blog/secure-android-smartphones/) to the present day. These components include all of [our past, current and future features](/android/docs/technical_overview) as well as:
+[Copperhead](https://copperhead.co) is the only company that has rights over the CopperheadOS project and owns the trademark, branding and multiple international copyrights for CopperheadOS and it's components. These protections covers all components of CopperheadOS from [it's initial release](https://copperhead.co/blog/secure-android-smartphones/) to the present day. These components include all of [our past, current and future features](/technical_overview) as well as:
 
 *   Core CopperheadOS Software
 *   Updater
