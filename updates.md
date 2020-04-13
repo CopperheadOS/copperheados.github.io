@@ -21,6 +21,9 @@ testing can do so by selecting "Beta" channel in *Settings -> System -> Advanced
 * TOC
 {:toc}
 
+### CopperheadOS Release: 2020.04.09
+* April security patch
+
 ### CopperheadOS Release: 2020.03.20
 * March security patch
 * Chromium update
