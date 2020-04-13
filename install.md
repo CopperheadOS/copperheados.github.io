@@ -1,9 +1,8 @@
 ---
 layout:      default
 title:       Installation
-description: Instructions on installing and updating CopperheadOS
+description: Instructions on installing, flashing, sideloading and updating CopperheadOS
 ---
-*Proceed with caution: This documentation is being worked on and out of date.*
 
 # Installing CopperheadOS
 {: .no_toc}
@@ -38,7 +37,7 @@ needed to match how it works on the officially supported devices.
 
 For Pixel phones, users not buying a device from Copperhead with the official build need to [make a build signed with their own keys](/building) before flashing it to the device with
 these instructions. Future releases can be similarly built from source and sideloaded as updates
-via the instructions here. 
+via the instructions here.
 
 HiKey and HiKey 960 installation instructions are not covered here.
 
