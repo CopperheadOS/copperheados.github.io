@@ -21,6 +21,15 @@ testing can do so by selecting "Beta" channel in *Settings -> System -> Advanced
 * TOC
 {:toc}
 
+### CopperheadOS Release: 2020.04.20 👽👌
+* Chromium update -> 81.0.4044
+* Re-add Gestures navigation
+* Remove Bluetooth scanning [(contact tracing concerns)](https://copperhead.co/blog/contact-tracing-in-modern-times/)
+* Disable Google suggestions from Chromium
+* Updater internals revamp
+  * Updater provides more feedback on each step
+  * Multiple bugs fixed
+
 ### CopperheadOS Release: 2020.04.09
 * April security patch
 
