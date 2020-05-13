@@ -35,15 +35,9 @@ It can be ported to other Android devices with Treble support via the standard [
 [security requirements](/devices#minimum-requirements-for-copperheados-support)
 needed to match how it works on the officially supported devices.
 
-For Pixel phones, users not buying a device from Copperhead with the official build need to [make a build signed with their own keys](/building) before flashing it to the device with
-these instructions. Future releases can be similarly built from source and sideloaded as updates
-via the instructions here.
-
-HiKey and HiKey 960 installation instructions are not covered here.
-
 ## Prerequisites
 
-You should have at least 4GB of memory to avoid problems.
+You should have at least 4GB of memory on your computer to avoid problems.
 
 You can obtain the adb and fastboot tools from the Android SDK. Either install Android Studio or
 use the standalone SDK. Do not use distribution packages for adb and fastboot. Distribution

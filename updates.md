@@ -21,6 +21,13 @@ testing can do so by selecting "Beta" channel in *Settings -> System -> Advanced
 * TOC
 {:toc}
 
+### CopperheadOS Release: 2020.05.05
+* [May security patch](https://source.android.com/security/bulletin/2020-05-01)
+* Seedvault -> 1.0.0
+* Bug Reporter -> 10
+* Updater -> 2.0
+* Background access privacy improvements
+
 ### CopperheadOS Release: 2020.04.20 👽👌
 * Chromium update -> 81.0.4044
 * Re-add Gestures navigation
