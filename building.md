@@ -151,9 +151,11 @@ all use Android Verified Boot 2.0 (AVB). Use the command below to generate all k
 ## Building
 
 The syntax for building a signed build is.
+
     ./build.sh -r -t target-files-package -d <device>
 
 The following are the complete list of script options.
+
     -d  --device     set device to build"
     -t  --target     set make target"
     -s  --sign       sign package"
