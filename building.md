@@ -156,12 +156,12 @@ The syntax for building a signed build is.
 
 The following are the complete list of script options.
 
-    -d  --device     set device to build"
-    -t  --target     set make target"
-    -s  --sign       sign package"
-    -r  --release    build release build"
-    -b  --build_id   set build number"
-    -c  --clean      clean build"
+    -d  --device     set device to build
+    -t  --target     set make target
+    -s  --sign       sign package
+    -r  --release    build release build
+    -b  --build_id   set build number
+    -c  --clean      clean build
 
 ## Prebuilt code
 
