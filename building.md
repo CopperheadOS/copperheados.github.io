@@ -62,7 +62,6 @@ on our official bugtrackers. General OS bugs [can be filed here](https://github.
 while device specific bugs can be filed on their respective issue trackers (ie: [Pixel 2 XL](https://github.com/CopperheadOS/device_google_taimen/issues)).  We look
 forward to working with you.
 
-
 ## CopperheadOS build instructions
 ## Build dependencies
 
@@ -145,14 +144,16 @@ signing scripts as a directory of unencrypted keys. The sample certificate subje
 with your own information or simply left as-is.
 
 Pixel and Pixel XL use Android Verified Boot 1.0. The Pixel 2, 3, 3a and the XL models
-all use Android Verified Boot 2.0 (AVB). Follow the instructions below.
+all use Android Verified Boot 2.0 (AVB). Use the command below to generate all keys necessary.
+
+    ./script/gen-all-keys
 
 ## Building
 
-The syntax for building a signed build is:
-    build.sh -r -t target-files-package -d <device>
+The syntax for building a signed build is.
+    ./build.sh -r -t target-files-package -d <device>
 
-The following are the complete list of script options:
+The following are the complete list of script options.
     -d  --device     set device to build"
     -t  --target     set make target"
     -s  --sign       sign package"
