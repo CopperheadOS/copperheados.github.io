@@ -13,10 +13,10 @@ description: Comparison between past and current devices supported by Copperhead
 This is a comparison of the security features of devices currently or previously supported by
 CopperheadOS along with those we plan to support in the future.
 
-Obsolete devices no longer supported by Android or CopperheadOS like the Nexus 5 are included to
-document historical progress.
+Obsolete devices no longer supported by Android or CopperheadOS are included to document 
+historical progress.
 
-HiKey and HiKey 960 are supported devices but aren't compared here because they're primarily
+HiKey and HiKey 960 were once supported devices but aren't compared here because they're primarily
 development platforms and it wouldn't make sense to compare the (lack of) security properties.
 
 The Samsung Galaxy S4 International LTE variant (jfltexx) used to be supported by CopperheadOS
@@ -52,7 +52,7 @@ considered hard requirements for expanding CopperheadOS support to future device
 * 64-bit CPU
 * LPDDR4 or later with TRR support to mitigate rowhammer
 * Driver support for at least Linux 4.4 (ideally mainline drivers). Linux 4.9 is the baseline for
-  devices launched in 2018.
+  devices launched since 2018.
 * No closed-source drivers in the kernel (binary drivers can be audited, but not easily hardened)
 * Proper scanning MAC randomization support avoiding identifiers other than the MAC address like a
   non-randomized probe sequence number
@@ -62,7 +62,7 @@ will only officially support devices meeting these requirements.
 
 ### Expected near future requirements
 
-We expect to make the following into requirements by the end of 2018:
+We have made the following into requirements as of 2018:
 
 * Public key fingerprint display for verified boot as a true security feature i.e. less truncation
 * Hardware-backed keys via a dedicated HSM
@@ -99,12 +99,12 @@ require continued releases of the firmware for components like the baseband, WiF
 | Pixel 3aXL | 10 (current)      | May 2022         |
 | Pixel 3    | 10 (current)      | October 2021     |
 | Pixel 3XL  | 10 (current)      | October 2021     |
-| Pixel 2XL  | 10 (current)      | October 2020     |
-| Pixel 2    | 10 (current)      | October 2020     |
-| Pixel XL   | 10 (EOL)          | December 2019    |
-| Pixel      | 10 (EOL)          | December 2019    |
-| Nexus 6P   | Oreo M3 (EOL)     | November 2018    |
-| Nexus 5X   | Oreo M2 (EOL)     | November 2018    |
+| Pixel 2XL  | 10 (EOL)          | October 2020     |
+| Pixel 2    | 10 (EOL)          | October 2020     |
+| Pixel XL   | n/a               | December 2019    |
+| Pixel      | n/a               | December 2019    |
+| Nexus 6P   | n/a               | November 2018    |
+| Nexus 5X   | n/a               | November 2018    |
 | Nexus 9    | n/a               | October 2017     |
 | Nexus 5    | n/a               | October 2016     |
 
@@ -125,8 +125,7 @@ require continued releases of the firmware for components like the baseband, WiF
 | Nexus 9    | No     |
 | Nexus 5    | No     |
 
-In addition to [making future updates substantially
-easier](https://source.android.com/devices/architecture/treble) and improving testing /
+In addition to making future updates substantially easier and improving testing /
 verification, Treble substantially improves security by [splitting up the HAL implementation into
 many isolated processes and reducing kernel attack
 surface](https://android-developers.googleblog.com/2017/07/shut-hal-up.html).
@@ -253,6 +252,12 @@ be backporting more changes from mainline / linux-hardened to the latest devices
 | ---------- | ---------- | -------- | -------- | ------------------ | --------------- | ------------- | ------------------ | ------------------------------ | ----------------------------- |
 | Pixel 2 XL | 4.4        | Hardware | Software | Yes                | Yes             | Basic         | Strong + zero byte | Hardened, 39-bit address space | Yes                           |
 | Pixel 2    | 4.4        | Hardware | Software | Yes                | Yes             | Basic         | Strong + zero byte | Hardened, 39-bit address space | Yes                           |
+
+
+While no longer supported by CopperheadOS, the following is a list of features CopperheadOS supported on legacy devices.
+
+| Device     | LTS Branch | PXN      | PAN      | HARDENED\_USERCOPY | FORTIFY\_SOURCE | RO protection | SSP                | ASLR                           | Clang + -fsanitize=local-init |
+| ---------- | ---------- | -------- | -------- | ------------------ | --------------- | ------------- | ------------------ | ------------------------------ | ----------------------------- |
 | Pixel XL   | 3.18       | Hardware | Software | Yes                | Yes             | Basic         | Strong + zero byte | Hardened, 39-bit address space | No                            |
 | Pixel      | 3.18       | Hardware | Software | Yes                | Yes             | Basic         | Strong + zero byte | Hardened, 39-bit address space | No                            |
 | Nexus 6P   | 3.10       | Hardware | No       | No                 | No              | Weak          | Strong + zero byte | Basic, 39-bit address space    | No                            |
