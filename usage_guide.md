@@ -14,7 +14,7 @@ without any Google apps and services.
 
 This usage guide documents the user experience of the OS with a focus on how it compares to the
 Android operating system. Most security features are kept unintrusive without a user-facing
-impact. See the [technical overview](/technical_overview) for
+impact. See the [technical overview](/android/docs/technical_overview) for
 documentation on the security features rather than only changes to the user experience.
 
 CopperheadOS can run Android apps unless they have a hard dependency on Google services. It ships
@@ -403,7 +403,7 @@ this to implement features like domain-based content filtering.
 
 You may notice that cold start app spawning time takes a bit longer (i.e. in the ballpark of
 100ms) than stock Android due to security centric [exec spawning
-feature](technical_overview#exec-based-spawning-model). This is most noticeable on the Nexus 5X
+feature](/android/docs/technical_overview#exec-based-spawning-model). This is most noticeable on the Nexus 5X
 due to it being the slowest supported device and is far less significant on current generation
 hardware. It doesn't cause any performance cost after launching an app, and similarly doesn't
 cause any extra latency if the app was already running / cached in the background.

@@ -48,8 +48,8 @@ Members of CBI receive:
 
 ### Prerequisites
 Before enrolling in CBI members are expected to:
-* Fully read and comprehend our [build documentation](/building#copperheados-build-instructions)
-* Understand Copperhead's [licensing](/licensing)
+* Fully read and comprehend our [build documentation](/android/docs/building#copperheados-build-instructions)
+* Understand Copperhead's [licensing](/android/docs/licensing)
 * Build CopperheadOS/Chromium from source
 * Have the pre-existing hardware and access to devices they are building for
 
@@ -61,7 +61,6 @@ experience issues building CopperheadOS from source please let us know
 on our official bugtrackers. General OS bugs [can be filed here](https://github.com/CopperheadOS/bugtracker)
 while device specific bugs can be filed on their respective issue trackers (ie: [Pixel 2 XL](https://github.com/CopperheadOS/device_google_taimen/issues)).  We look
 forward to working with you.
-
 
 ## CopperheadOS build instructions
 ## Build dependencies
@@ -80,10 +79,12 @@ This documentation assumes you're using Ubuntu 18.04. Contact
 
 CopperheadOS currently has official build support for the following devices:
 
-* Pixel (sailfish)
-* Pixel XL (marlin)
 * Pixel 2 (walleye)
 * Pixel 2 XL (taimen)
+* Pixel 3 (blueline)
+* Pixel 3 XL (crosshatch)
+* Pixel 3a (sargo)
+* Pixel 3a XL (bonito)
 
 In the past CopperheadOS supported:
 
@@ -91,9 +92,11 @@ In the past CopperheadOS supported:
 * HiKey 960 (hikey960)
 * Nexus 5X (bullhead)
 * Nexus 6P (angler)
+* Pixel (sailfish)
+* Pixel XL (marlin)
 
-It can be ported to other Android devices with Treble support via the standard [device porting process](/building#device-porting-process). Most devices lack support for the
-[security requirements](/devices#minimum-requirements-for-copperheados-support)
+It can be ported to other Android devices with Treble support via the standard [device porting process](/android/docs/building#device-porting-process). Most devices lack support for the
+[security requirements](/android/docs/devices#minimum-requirements-for-copperheados-support)
 needed to match how it works on the officially supported devices.
 
 ## Downloading source code
@@ -107,11 +110,11 @@ with a moving target.
 
 ### Development branch
 
-The pie branch is used for the Pixel, Pixel XL, Pixel 2, Pixel 2 XL and other devices:
+The Android10 branch is used for all the currently supported Pixel family devices (1 through 3a and XLs) and other devices:
 
-    mkdir copperheados-pie
-    cd copperheados-pie
-    repo init -u https://github.com/CopperheadOS/platform_manifest.git -b pie
+    mkdir copperheados
+    cd copperheados
+    repo init -u git@gitlab.com:copperheadsec/copperhead-source-partner-access/manifest.git -b android10 --manifest-name partner.xml
     repo sync -j32
 
 If your network is unreliable and ```repo sync``` fails, you can run the ```repo
@@ -125,118 +128,6 @@ one source to another, such as when CopperheadOS forks an additional Android Ope
 repository. You don't need to start over to switch between different branches or tags. You may
 need to run ```repo init``` again to continue down the same branch since CopperheadOS only provides a
 stable history via tags.
-
-## Chromium and WebView
-
-*Chromium is now prebuilt and included in the Copperhead source. The following is left for users
-who still wish to build Chromium on their own.*
-
-Before building CopperheadOS, you need to build Chromium for the WebView and *optionally* the
-standalone browser app. CopperheadOS uses a hardened fork of Chromium for these. It needs to be
-rebuilt when Chromium is updated or the CopperheadOS ```chromium_patches``` repository changes.
-
-Chromium and the WebView are independent applications built from the Chromium source tree. The
-CopperheadOS Chromium build is located at external/chromium and includes the WebView.
-
-See [Chromium's Android build
-instructions](https://www.chromium.org/developers/how-tos/android-build-instructions) for details
-on obtaining the prerequisites.
-
-    mkdir chromium
-    cd chromium
-    fetch --nohooks android --target_os_only=true
-
-Sync to the latest stable release for Android:
-
-    gclient sync --with_branch_heads -r 66.0.3359.158 --jobs 32
-
-Apply the CopperheadOS patches on top of the tagged release:
-
-    git clone https://github.com/CopperheadOS/chromium_patches.git
-    cd src
-    git am ../chromium_patches/*.patch
-
-Note that we don't have our own public repository at the moment because Chromium is too large to
-host it on GitHub or Bitbucket where we are hosting the other repositories.
-
-Then, configure the build in the ```src``` directory:
-
-    gn args out/Default
-
-CopperheadOS configuration:
-
-    target_os = "android"
-    target_cpu = "arm64"
-    is_debug = false
-
-    is_official_build = true
-    is_component_build = false
-    symbol_level = 0
-
-    ffmpeg_branding = "Chrome"
-    proprietary_codecs = true
-
-    android_channel = "stable"
-    android_default_version_name = "66.0.3359.158"
-    android_default_version_code = "335915852"
-
-To build Monochrome, which provides both Chromium and the WebView:
-
-    ninja -C out/Default/ monochrome_public_apk
-
-The apk needs to be copied from
-
-    out/Default/apks/MonochromePublic.apk
-
-into the Android source tree at
-
-    external/chromium/prebuilt/arm64/MonochromePublic.apk
-
-Standalone builds of Chromium and the WebView can be done via the ```chrome_modern_public_apk``` and
-```system_webview_apk``` targets but those aren't used by CopperheadOS. The build system isn't set up
-for including them and the standalone WebView isn't whitelisted in
-
-    frameworks/base/core/res/res/xml/config_webview_packages.
-
-## Setting up the build environment
-
-The build has to be done from bash as envsetup.sh is not compatible with other shells like zsh.
-
-Set up the build environment:
-
-    source script/copperhead.sh
-
-Select the desired build target (```aosp_marlin``` is the Pixel XL):
-
-    choosecombo release aosp_marlin user
-
-For a development build, you may want to replace ```user``` with ```userdebug``` in order to have better
-debugging support. Production builds should be ```user``` builds as they are significantly more
-secure and don't make additional performance sacrifices to improve debugging.
-
-### Reproducible builds
-
-To reproduce a past build, you need to export ```BUILD_DATETIME``` and ```BUILD_NUMBER``` to the values
-set for the past build. These can be obtained from ```out/build_date.txt``` and ```out/build_number.txt```
-in a build output directory and the ```ro.build.date.utc``` and ```ro.build.version.incremental```
-properties which are also included in the over-the-air zip metadata rather than just the OS
-itself.
-
-The signing process for release builds is done after completing builds and replaces the dm-verity
-trees, apk signatures, etc. and can only be reproduced with access to the same private keys. If
-you want to compare to production builds signed with different keys you need to stick to comparing
-everything other than the signatures.
-
-## Extracting vendor files for Pixel devices
-
-Extract the vendor files corresponding to the matching release:
-
-```./script/prepare-vendor-device DEVICE BUILD_ID```
-
-Note that android-prepare-vendor is non-deterministic for apk and jar files where Google doesn't
-provide them unoptimized / unstripped. This was unintentionally improved by Google for the Pixel
-and Pixel XL since Google stopped including odex files in the main system image and they are now
-provided as unstripped apk files.
 
 ## Generating release signing keys
 
@@ -252,103 +143,25 @@ secure them at rest, you should take a different approach where they can still b
 signing scripts as a directory of unencrypted keys. The sample certificate subject can be replaced
 with your own information or simply left as-is.
 
-The Nexus 5X, Nexus 6P, Pixel and Pixel XL use Android Verified Boot 1.0. The Pixel 2 and Pixel 2
-XL use Android Verified Boot 2.0 (AVB). Follow the appropriate instructions below.
+Pixel and Pixel XL use Android Verified Boot 1.0. The Pixel 2, 3, 3a and the XL models
+all use Android Verified Boot 2.0 (AVB). Use the command below to generate all keys necessary.
 
-### Android Verified Boot 1.0
-
-To generate keys for marlin (you should use unique keys per device variant):
-
-    mkdir -p keys/marlin
-    cd keys/marlin
-    ../../development/tools/make_key releasekey '/C=CA/ST=Ontario/L=Toronto/O=CopperheadOS/OU=CopperheadOS/CN=CopperheadOS/emailAddress=copperheados@copperhead.co'
-    ../../development/tools/make_key platform '/C=CA/ST=Ontario/L=Toronto/O=CopperheadOS/OU=CopperheadOS/CN=CopperheadOS/emailAddress=copperheados@copperhead.co'
-    ../../development/tools/make_key shared '/C=CA/ST=Ontario/L=Toronto/O=CopperheadOS/OU=CopperheadOS/CN=CopperheadOS/emailAddress=copperheados@copperhead.co'
-    ../../development/tools/make_key media '/C=CA/ST=Ontario/L=Toronto/O=CopperheadOS/OU=CopperheadOS/CN=CopperheadOS/emailAddress=copperheados@copperhead.co'
-    ../../development/tools/make_key verity '/C=CA/ST=Ontario/L=Toronto/O=CopperheadOS/OU=CopperheadOS/CN=CopperheadOS/emailAddress=copperheados@copperhead.co'
-    cd ../..
-
-Generate the verity public key:
-
-    make -j20 generate_verity_key
-    out/host/linux-x86/bin/generate_verity_key -convert keys/marlin/verity.x509.pem keys/marlin/verity_key
-
-Generate verity keys in the format used by the kernel for the Pixel and Pixel XL:
-
-    openssl x509 -outform der -in keys/marlin/verity.x509.pem -out kernel/google/marlin/verity_user.der.x509
-
-The same kernel and device repository is used for the Pixel and Pixel XL. There's no separate
-sailfish kernel.
-
-### Android Verified Boot 2.0 (AVB)
-
-To generate keys for taimen (you should use unique keys per device variant):
-
-    mkdir -p keys/taimen
-    cd keys/taimen
-    ../../development/tools/make_key releasekey '/C=CA/ST=Ontario/L=Toronto/O=CopperheadOS/OU=CopperheadOS/CN=CopperheadOS/emailAddress=copperheados@copperhead.co'
-    ../../development/tools/make_key platform '/C=CA/ST=Ontario/L=Toronto/O=CopperheadOS/OU=CopperheadOS/CN=CopperheadOS/emailAddress=copperheados@copperhead.co'
-    ../../development/tools/make_key shared '/C=CA/ST=Ontario/L=Toronto/O=CopperheadOS/OU=CopperheadOS/CN=CopperheadOS/emailAddress=copperheados@copperhead.co'
-    ../../development/tools/make_key media '/C=CA/ST=Ontario/L=Toronto/O=CopperheadOS/OU=CopperheadOS/CN=CopperheadOS/emailAddress=copperheados@copperhead.co'
-    openssl genrsa -out avb.pem 2048
-    ../../external/avb/avbtool extract_public_key --key avb.pem --output avb_pkmd.bin
-    cd ../..
-
-The ```avb_pkmd.bin``` file isn't needed for generating a signed release but rather to set the public
-key used by the device to enforce verified boot.
+    ./script/gen-all-keys
 
 ## Building
 
-Incremental builds (i.e. starting from the old build) usually work for development and are the
-normal way to develop changes. However, there are cases where changes are not properly picked up
-by the build system. For production builds, you should remove the remnants of any past builds
-before starting, particularly if there were non-trivial changes:
+The syntax for building a signed build is.
 
-    rm -r out
+    ./build.sh -r -t target-files-package -d <device>
 
-Start the build process, with -j# used to set the number of parallel jobs to the number of CPU
-threads. You also need 2-4GiB of memory per job, so reduce it based on available memory if
-necessary:
+The following are the complete list of script options.
 
-    make target-files-package -j20
-
-### Faster builds for development use only
-
-The normal production build process involves building a target files package to be resigned with
-secure release keys and then converted into factory images and/or an update zip via the sections
-below. If you have a dedicated development device with no security requirements, you can save time
-by using the default make target, leaving the bootloader unlocked and flashing the raw images that
-are signed with the default public test keys:
-
-    make -j20
-
-Technically, you could generate test key signed update packages. However, there's no point of
-sideloading update packages when the bootloader is unlocked and there's no value in a locked
-bootloader without signing the build using release keys, since verified boot will be meaningless
-and the keys used to verify sideloaded updates are also public. The only reason to use update
-packages or a locked bootloader without signing the build with release keys would be testing that
-functionality and it makes a lot more sense to test it with proper signing keys rather than the
-default public test keys.
-
-## Generating signed factory images and full update packages
-
-For the Pixels, build the tool needed to generate A/B updates:
-
-    make -j20 brillo_update_payload
-
-For HiKey and HiKey 960, build dumpkey:
-
-    make -j20 dumpkey
-
-Generate a signed release build with the release.sh script:
-
-    script/release.sh marlin
-
-The factory images and update package will be in ```out/release-marlin-$BUILD_NUMBER```. The update
-zip performs a full OS installation so it can be used to update from any previous version. More
-efficient incremental updates are used for official over-the-air CopperheadOS updates and can be
-generated by keeping around past signed ```target_files``` zips and generating incremental updates
-from those to the most recent signed ```target_files``` zip.
+    -d  --device     set device to build
+    -t  --target     set make target
+    -s  --sign       sign package
+    -r  --release    build release build
+    -b  --build_id   set build number
+    -c  --clean      clean build
 
 ## Prebuilt code
 
