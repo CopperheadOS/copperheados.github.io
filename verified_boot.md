@@ -9,7 +9,7 @@ description: Technical information on verified boot and remote attestation
 Verified boot is an important security feature, primarily aimed at making it substantially harder
 for an attacker to persistently compromise the OS. It also provides basic resistance against
 tampering with a device after gaining physical access. For more user-oriented information such as
-details on the user experience and instructions on using the Auditor app for attestation, see [the section in the usage guide](/usage_guide#verified-boot).
+details on the user experience and instructions on using the Auditor app for attestation, see [the section in the usage guide](/android/docs/usage_guide#verified-boot).
 
 In the primary use case, it serves as an extra line of defence after an attacker has gained remote
 code execution (either with an exploit chain or by getting the user to install an app) and then
