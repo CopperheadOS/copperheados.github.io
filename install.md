@@ -31,8 +31,8 @@ At one point CopperheadOS was supported on the:
 * Pixel XL (marlin)
 
 
-It can be ported to other Android devices with Treble support via the standard [device porting process](/building#device-porting-process). Most devices lack support for the
-[security requirements](/devices#minimum-requirements-for-copperheados-support)
+It can be ported to other Android devices with Treble support via the standard [device porting process](/android/docs/building#device-porting-process). Most devices lack support for the
+[security requirements](/android/docs/devices#minimum-requirements-for-copperheados-support)
 needed to match how it works on the officially supported devices.
 
 ## Prerequisites
@@ -149,7 +149,7 @@ depends on the OS you're using and the applications available.
 * [Extracting files in Mac](https://support.apple.com/en-ca/guide/terminal/apdc52250ee-4659-4751-9a3a-8b7988150530/mac)
 
 *$DEVICE will either be crosshatch, taimen, walleye, sargo, bonito or blueline. The $DATE of the factory
-image will correspond to our [releases](/updates).*
+image will correspond to our [releases](/android/docs/updates).*
 
 Note that the ```fastboot``` command run by the flashing script requires a fair bit of free
 space in a temporary directory, which defaults to ```/tmp```:
@@ -229,7 +229,7 @@ for optimal hardware security.
 
 ### Update client
 
-See [the section in the usage guide](/usage_guide#updates-on-pixel-phones).
+See [the section in the usage guide](/android/docs/usage_guide#updates-on-pixel-phones).
 
 ### Sideloading
 
