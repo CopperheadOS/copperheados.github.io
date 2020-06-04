@@ -22,7 +22,7 @@ have no remote attestation, weaker verified boot without rollback protection, a 
 implementation of encryption, a different update system and only a subset of the kernel hardening
 is present.
 
-The [usage guide](/usage_guide) covers the user experience of
+The [usage guide](/android/docs/usage_guide) covers the user experience of
 the small subset of user-facing features in more depth.
 
 * TOC
@@ -49,7 +49,7 @@ standard security features inherited from Android:
   Protected Memory Block along with direct enforcement of the CopperheadOS public keys. Very basic
   remote attestation of verified boot results including the public key fingerprint is supported
   via keys provisioned by the device vendor accessible to the Trusted Execution Environment for
-  signing. See the [documentation on verified boot](/verified_boot) for more details.
+  signing. See the [documentation on verified boot](/android/docs/verified_boot) for more details.
 * Baseline app isolation via unique uid/gid pairs for each app.
 * App permission model including the ability to revoke permissions and supply fake data. Most
   permissions are based on dynamic checks for IPC requests, while a small subset make use of
