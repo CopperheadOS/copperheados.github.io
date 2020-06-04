@@ -57,7 +57,7 @@ considered hard requirements for expanding CopperheadOS support to future device
 * Proper scanning MAC randomization support avoiding identifiers other than the MAC address like a
   non-randomized probe sequence number
 
-CopperheadOS can be [ported to other devices](/building#device-porting-process) but
+CopperheadOS can be [ported to other devices](/android/docs/building#device-porting-process) but
 will only officially support devices meeting these requirements.
 
 ### Expected near future requirements
