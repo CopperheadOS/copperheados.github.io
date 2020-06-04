@@ -48,8 +48,8 @@ Members of CBI receive:
 
 ### Prerequisites
 Before enrolling in CBI members are expected to:
-* Fully read and comprehend our [build documentation](/building#copperheados-build-instructions)
-* Understand Copperhead's [licensing](/licensing)
+* Fully read and comprehend our [build documentation](/android/docs/building#copperheados-build-instructions)
+* Understand Copperhead's [licensing](/android/docs/licensing)
 * Build CopperheadOS/Chromium from source
 * Have the pre-existing hardware and access to devices they are building for
 
@@ -95,8 +95,8 @@ In the past CopperheadOS supported:
 * Pixel (sailfish)
 * Pixel XL (marlin)
 
-It can be ported to other Android devices with Treble support via the standard [device porting process](/building#device-porting-process). Most devices lack support for the
-[security requirements](/devices#minimum-requirements-for-copperheados-support)
+It can be ported to other Android devices with Treble support via the standard [device porting process](/android/docs/building#device-porting-process). Most devices lack support for the
+[security requirements](/android/docs/devices#minimum-requirements-for-copperheados-support)
 needed to match how it works on the officially supported devices.
 
 ## Downloading source code
